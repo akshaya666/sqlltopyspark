@@ -58,7 +58,7 @@ def sql_to_pyspark(sql_query):
                         if token.has_alias():
                             aliases[token.get_real_name()] = token.get_alias()
                 elif token.value.lower() != 'on':
-                    tables.append(token)
+                    tables.append(token.get_real_name())
             elif join_flag and not on_flag:
                 if token.value.lower() == 'on':
                     on_flag = True
@@ -100,7 +100,7 @@ def sql_to_pyspark(sql_query):
     else:
         return "Unsupported SQL command"
 
-# Example SQL query without window functions
-sql_query = "SELECT column1, SUM(column2) FROM table1 GROUP BY column1 HAVING SUM(column2) > 100"
+# Example SQL query with FROM clause
+sql_query = "SELECT column1, column2 FROM table1"
 pyspark_code = sql_to_pyspark(sql_query)
 print(pyspark_code)
