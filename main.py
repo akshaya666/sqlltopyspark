@@ -62,7 +62,7 @@ def sql_to_pyspark(sql_query):
                     else:
                         columns.append('*')
                 elif token.value.lower() != 'on':
-                    tables.append(token.get_real_name())
+                    tables.append(token.get_real_name() if hasattr(token, 'get_real_name') else token.value)
             elif join_flag and not on_flag:
                 if token.value.lower() == 'on':
                     on_flag = True
