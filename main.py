@@ -108,7 +108,7 @@ def sql_to_pyspark(sql_query):
     else:
         return "Unsupported SQL command"
 
-# Example SQL query with wildcard *
+# Example SQL query without TABLE keyword
 sql_query = "SELECT * FROM table1"
 pyspark_code = sql_to_pyspark(sql_query)
 print(pyspark_code)
