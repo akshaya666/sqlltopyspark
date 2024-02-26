@@ -79,14 +79,22 @@ def sql_to_pyspark(sql_query):
                 conditions.append(token)
 
         # Construct the PySpark code
-        pyspark_code = f"spark.sql(\"\"\"SELECT {', '.join(str(column) + (' AS ' + aliases[column] if column in aliases else '') for column in columns)} FROM {', '.join(str(table) for table in tables)} "
+        pyspark_code = f"df = spark.read.table('{tables[0]}')\n"
         for join_type, condition_lists in join_conditions.items():
             for i, condition_list in enumerate(condition_lists):
-                condition_str = ' AND '.join(str(condition) for condition in condition_list)
-                pyspark_code += f"{join_type.upper()} JOIN {tables[i+1]} ON {condition_str} "
-        pyspark_code += f"GROUP BY {', '.join(str(group) for group in group_by) if group_by else ''} "
-        pyspark_code += f"HAVING {' AND '.join(str(condition) for condition in conditions) if conditions else ''} "
-        pyspark_code += f"ORDER BY {', '.join(str(order) for order in order_by) if order_by else ''}\"\"\").show()"
+                condition_str = ' and '.join(str(condition) for condition in condition_list)
+                pyspark_code += f"df = df.join(spark.read.table('{tables[i+1]}'), {condition_str}, '{join_type.upper()}')\n"
+        if conditions:
+            filter_condition = ' and '.join(str(condition) for condition in conditions)
+            pyspark_code += f"df = df.filter('{filter_condition}')\n"
+        if group_by:
+            group_by_cols = ', '.join(str(group) for group in group_by)
+            pyspark_code += f"df = df.groupBy({group_by_cols})\n"
+        if order_by:
+            order_by_cols = ', '.join(str(order) for order in order_by)
+            pyspark_code += f"df = df.orderBy('{order_by_cols}')\n"
+        pyspark_code += "df.show()"
+
         return pyspark_code
 
     else:
