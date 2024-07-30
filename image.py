@@ -1,7 +1,10 @@
+pip install pytesseract pillow fitz pdfplumber openai
+
 import pytesseract
 from PIL import Image
 import io
 import fitz  # PyMuPDF
+import pdfplumber
 import openai
 
 # Set your OpenAI API key
@@ -25,21 +28,33 @@ def extract_images_from_pdf(file_path):
             base_image = pdf_document.extract_image(xref)
             img_bytes = base_image["image"]
             text_from_image = extract_text_from_image(img_bytes)
-            descriptions.append(f"Image {img_index + 1} on page {page_num + 1} contains: {text_from_image}")
+            descriptions.append(f"Image {img_index + 1} on page {page_num + 1}: {text_from_image}")
     
     return descriptions
 
-def extract_text_from_pdf(file_path):
-    """Extract text from a PDF file."""
+def extract_text_and_tables_from_pdf(file_path):
+    """Extract text and tables from a PDF file."""
     text = ""
-    pdf_document = fitz.open(file_path)
+    tables = []
     
-    for page_num in range(len(pdf_document)):
-        page = pdf_document.load_page(page_num)
-        text += page.get_text()
+    with pdfplumber.open(file_path) as pdf:
+        for page in pdf.pages:
+            text += page.extract_text() or ""
+            for table in page.extract_tables():
+                tables.append(table)
     
-    return text
+    return text, tables
 
+def format_tables(tables):
+    """Format tables into a readable string format."""
+    table_text = ""
+    for table_index, table in enumerate(tables):
+        table_text += f"Table {table_index + 1}:\n"
+        for row in table:
+            table_text += "\t".join([str(cell) for cell in row]) + "\n"
+        table_text += "\n"
+    
+    return table_text
 
 def chunk_text(text, max_tokens=2048):
     """Chunk the text into parts that fit within the token limit."""
@@ -58,10 +73,12 @@ def chunk_text(text, max_tokens=2048):
     
     return chunks
 
-def ask_question_to_chunks(question, chunks, model="gpt-4", max_tokens=300):
-    """Send each chunk along with the question to the OpenAI API and collect the answers."""
+def ask_question_with_content(question, text, image_descriptions, table_text, model="gpt-4", max_tokens=300):
+    """Combine text, image descriptions, and table text and ask a question to the OpenAI API."""
+    combined_text = text + "\n\n" + "\n".join(image_descriptions) + "\n\n" + table_text
+    chunks = chunk_text(combined_text, max_tokens=2048)
+    
     answers = []
-
     for chunk in chunks:
         prompt = f"{chunk}\n\nQuestion: {question}\nAnswer:"
         try:
@@ -79,19 +96,15 @@ def ask_question_to_chunks(question, chunks, model="gpt-4", max_tokens=300):
         except openai.error.OpenAIError as e:
             print(f"Error: {e}")
     
-    return answers
-
-def summarize_answers(answers, model="gpt-4", max_tokens=300):
-    """Combine the answers and generate a summary."""
     combined_answers = "\n\n".join(answers)
-    prompt = f"Here are several answers to the same question from different parts of a document:\n\n{combined_answers}\n\nPlease provide a concise summary of the answer:"
+    prompt_summary = f"Here are several answers to the same question from different parts of a document:\n\n{combined_answers}\n\nPlease provide a concise summary of the answer:"
     
     try:
         response = openai.ChatCompletion.create(
             model=model,
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
+                {"role": "user", "content": prompt_summary}
             ],
             max_tokens=max_tokens,
             temperature=0.7
@@ -102,19 +115,12 @@ def summarize_answers(answers, model="gpt-4", max_tokens=300):
         print(f"Error: {e}")
         return None
 
-
 file_path = "your_document.pdf"  # Path to your PDF document
-text = extract_text_from_pdf(file_path)
+text, tables = extract_text_and_tables_from_pdf(file_path)
+table_text = format_tables(tables)
 image_descriptions = extract_images_from_pdf(file_path)
 
-combined_text = text + "\n\n" + "\n".join(image_descriptions)
-chunks = chunk_text(combined_text, max_tokens=2048)
+question = "What does the document say about the tables and images?"
+summary = ask_question_with_content(question, text, image_descriptions, table_text, model="gpt-4")
 
-question = "What does the document say about the images?"
-answers = ask_question_to_chunks(question, chunks, model="gpt-4")
-
-if answers:
-    summary = summarize_answers(answers, model="gpt-4")
-    print(summary)
-else:
-    print("No answers found for the question.")
+print(summary)
