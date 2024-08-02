@@ -15,16 +15,18 @@ def home():
 @app.route('/upload', methods=['POST'])
 def upload_files():
     if 'files[]' not in request.files:
-        return redirect(request.url)
+        return redirect(url_for('home'))
+    
     files = request.files.getlist('files[]')
     for file in files:
-        if file:
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+        if file and file.filename:
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(file_path)
+    
     return redirect(url_for('home'))
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
-    # Initialize chat history if not present
     if 'chat_history' not in session:
         session['chat_history'] = []
 
@@ -45,4 +47,3 @@ def clear_chat():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
