@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import os
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Required for session management
+app.secret_key = 'your_secret_key'  # Replace with a real secret key
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -24,17 +24,18 @@ def upload_files():
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
+    # Initialize chat history if not present
     if 'chat_history' not in session:
         session['chat_history'] = []
-    
+
     if request.method == 'POST':
         user_message = request.form['message']
         chatbot_response = f"ChatBot: {user_message}"  # Simulate chatbot response
         
-        # Add new messages to chat history
+        # Append new messages to chat history
         session['chat_history'].append({'role': 'user', 'message': user_message})
         session['chat_history'].append({'role': 'bot', 'message': chatbot_response})
-    
+
     return render_template('index.html', section='chat', chat_history=session.get('chat_history'))
 
 @app.route('/clear_chat')
