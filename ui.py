@@ -12,18 +12,22 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 def home():
     return render_template('index.html', section='home')
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 def upload_files():
-    if 'files[]' not in request.files:
-        return redirect(url_for('home'))
-    
-    files = request.files.getlist('files[]')
-    for file in files:
-        if file and file.filename:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-            file.save(file_path)
-    
-    return redirect(url_for('home'))
+    if request.method == 'POST':
+        if 'files[]' not in request.files:
+            return redirect(url_for('home'))
+
+        files = request.files.getlist('files[]')
+        uploaded_files = []
+        for file in files:
+            if file and file.filename:
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+                file.save(file_path)
+                uploaded_files.append(file.filename)
+
+        return render_template('index.html', section='upload', uploaded_files=uploaded_files)
+    return render_template('index.html', section='upload')
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
@@ -47,4 +51,5 @@ def clear_chat():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
