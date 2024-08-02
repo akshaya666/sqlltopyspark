@@ -169,6 +169,14 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Upload</button>
                 </form>
+                {% if uploaded_files %}
+                    <h3>Uploaded Files:</h3>
+                    <ul>
+                        {% for file in uploaded_files %}
+                            <li>{{ file }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             {% elif section == 'chat' %}
                 <h1>Chat Prompt</h1>
                 <div class="chat-box">
