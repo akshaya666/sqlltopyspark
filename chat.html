@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Prompt</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .chat-box {
+            height: 500px;
+            overflow-y: auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .message.user {
+            text-align: right;
+        }
+        .message.user .message-bubble {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+        .message.bot .message-bubble {
+            background-color: #e9ecef;
+            color: #000;
+            padding: 10px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+        .chat-input {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Chat Prompt</h1>
+            </div>
+            <div class="card-body">
+                <div class="chat-box">
+                    {% if user_message %}
+                        <div class="message user">
+                            <div class="message-bubble">{{ user_message }}</div>
+                        </div>
+                        <div class="message bot">
+                            <div class="message-bubble">{{ chatbot_response }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+                <form action="{{ url_for('chat') }}" method="post" class="chat-input">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="message" placeholder="Type your message" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+                <br>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Go to File Upload</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
