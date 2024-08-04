@@ -130,22 +130,28 @@
         }
         .input-area input {
             flex: 1;
-            border-radius: 20px;
+            border-radius: 25px;
             border: 1px solid #ddd;
             padding: 15px;
             margin-right: 10px;
             font-size: 16px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s;
+        }
+        .input-area input:focus {
+            border-color: #007bff;
+            outline: none;
         }
         .input-area button {
             background-color: #007bff;
             color: #ffffff;
             border: none;
-            border-radius: 20px;
+            border-radius: 25px;
             padding: 15px 20px;
             font-size: 16px;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
         }
         .input-area button:hover {
             background-color: #0056b3;
@@ -237,7 +243,7 @@
                     {% endfor %}
                 </div>
                 <div class="input-area">
-                    <form action="{{ url_for('chat') }}" method="post">
+                    <form action="{{ url_for('chat') }}" method="post" style="width: 100%;">
                         <input type="text" name="message" placeholder="Type your message here..." required>
                         <button type="submit">Send</button>
                     </form>
@@ -256,10 +262,13 @@
             const fileName = event.target.files.length ? event.target.files[0].name : 'No file chosen';
             document.getElementById('file-name').textContent = fileName;
         });
-        
-        // Auto-scroll chat box
-        const chatBox = document.getElementById('chat-box');
-        chatBox.scrollTop = chatBox.scrollHeight;
+
+        function autoScrollToBottom() {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        window.onload = autoScrollToBottom;
     </script>
 </body>
 </html>
