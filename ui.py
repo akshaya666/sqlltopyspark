@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, session, redirect, url_for
 import os
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Replace with a real secret key
+app.secret_key = 'your_secret_key'  # Use a strong, unique key in production
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -35,14 +35,15 @@ def chat():
         session['chat_history'] = []
 
     if request.method == 'POST':
-        user_message = request.form['message']
-        chatbot_response = f"ChatBot: {user_message}"  # Simulate chatbot response
-        
-        # Append new messages to chat history
-        session['chat_history'].append({'role': 'user', 'message': user_message})
-        session['chat_history'].append({'role': 'bot', 'message': chatbot_response})
+        message = request.form.get('message', '').strip()
+        if message:
+            session['chat_history'].append({'role': 'user', 'message': message})
 
-    return render_template('index.html', section='chat', chat_history=session.get('chat_history'))
+            # Simulate a bot response
+            bot_message = f"ChatBot: {message}"
+            session['chat_history'].append({'role': 'bot', 'message': bot_message})
+
+    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []))
 
 @app.route('/clear_chat')
 def clear_chat():
@@ -51,5 +52,3 @@ def clear_chat():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
