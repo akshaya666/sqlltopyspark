@@ -119,7 +119,6 @@
         .input-area {
             display: flex;
             align-items: center;
-            margin-top: 10px;
             position: sticky;
             bottom: 0;
             background-color: #f8f9fa;
@@ -127,6 +126,12 @@
             padding: 10px;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
             z-index: 1;
+            width: calc(100% - 20px); /* Adjust to account for padding */
+        }
+        .input-area form {
+            display: flex;
+            width: 100%;
+            margin: 0;
         }
         .input-area input {
             flex: 1;
@@ -257,9 +262,9 @@
             document.querySelector('.sidebar').classList.toggle('collapsed');
             document.querySelector('.content').classList.toggle('collapsed');
         }
-        
-        document.getElementById('file-input').addEventListener('change', function(event) {
-            const fileName = event.target.files.length ? event.target.files[0].name : 'No file chosen';
+
+        document.getElementById('file-input').addEventListener('change', function() {
+            const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
             document.getElementById('file-name').textContent = fileName;
         });
 
