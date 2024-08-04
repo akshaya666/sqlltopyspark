@@ -15,9 +15,6 @@ def home():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_files():
     if request.method == 'POST':
-        if 'files[]' not in request.files:
-            return redirect(url_for('home'))
-
         files = request.files.getlist('files[]')
         uploaded_files = []
         for file in files:
@@ -25,7 +22,6 @@ def upload_files():
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
                 file.save(file_path)
                 uploaded_files.append(file.filename)
-
         return render_template('index.html', section='upload', uploaded_files=uploaded_files)
     return render_template('index.html', section='upload')
 
