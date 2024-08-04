@@ -161,6 +161,7 @@
             padding: 30px;
             text-align: center;
             transition: background-color 0.3s;
+            position: relative;
         }
         .upload-box:hover {
             background-color: #e9ecef;
@@ -178,6 +179,11 @@
         .upload-box p {
             margin: 0;
             color: #666;
+        }
+        .file-name {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #333;
         }
     </style>
 </head>
@@ -198,6 +204,7 @@
                         <label for="file-input">Click to select files</label>
                         <input type="file" id="file-input" name="files[]" multiple>
                         <p>or drag and drop files here</p>
+                        <div id="file-name" class="file-name">No file chosen</div>
                     </div>
                     <button class="btn btn-primary" id="upload-button">Upload</button>
                 </div>
@@ -249,6 +256,8 @@
         });
 
         document.getElementById('file-input').addEventListener('change', function() {
+            var fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
+            document.getElementById('file-name').textContent = fileName;
             this.form.submit();
         });
     </script>
