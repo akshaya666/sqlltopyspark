@@ -1,279 +1,263 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chat Application</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            display: flex;
-            height: 100%;
-        }
-        .sidebar {
-            width: 250px;
-            background-color: #20232a;
-            color: #61dafb;
-            min-height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            z-index: 1000;
-        }
-        .sidebar.collapsed {
-            width: 80px;
-        }
-        .sidebar a {
-            display: block;
-            color: #61dafb;
-            padding: 15px;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-        .sidebar a:hover {
-            background-color: #282c34;
-        }
-        .sidebar .sidebar-toggle {
-            position: absolute;
-            top: 15px;
-            right: -35px;
-            width: 30px;
-            height: 30px;
-            background-color: #61dafb;
-            color: #20232a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: right 0.3s;
-        }
-        .sidebar.collapsed .sidebar-toggle {
-            right: -30px;
-        }
-        .content {
-            margin-left: 250px;
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        .sidebar.collapsed ~ .content {
-            margin-left: 80px;
-        }
-        .chat-box {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
-            position: relative;
-            font-size: 16px;
-        }
-        .chat-box::-webkit-scrollbar {
-            width: 8px;
-        }
-        .chat-box::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-        .chat-box::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        .message {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: flex-end;
-        }
-        .message.user {
-            justify-content: flex-end;
-        }
-        .message.user .message-bubble {
-            background-color: #007bff;
-            color: #ffffff;
-            padding: 10px;
-            border-radius: 15px;
-            max-width: 60%;
-            text-align: right;
-        }
-        .message.bot .message-bubble {
-            background-color: #e9ecef;
-            color: #000;
-            padding: 10px;
-            border-radius: 15px;
-            max-width: 60%;
-        }
-        .input-area {
-            display: flex;
-            align-items: center;
-            position: sticky;
-            bottom: 0;
-            background-color: #f8f9fa;
-            border-top: 1px solid #ddd;
-            padding: 10px;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-            width: calc(100% - 20px); /* Adjust to account for padding */
-        }
-        .input-area form {
-            display: flex;
-            width: 100%;
-            margin: 0;
-        }
-        .input-area input {
-            flex: 1;
-            border-radius: 25px;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-right: 10px;
-            font-size: 16px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.3s;
-        }
-        .input-area input:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        .input-area button {
-            background-color: #007bff;
-            color: #ffffff;
-            border: none;
-            border-radius: 25px;
-            padding: 15px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s;
-        }
-        .input-area button:hover {
-            background-color: #0056b3;
-        }
-        .btn-secondary {
-            margin-top: 10px;
-        }
-        .sidebar.collapsed .sidebar a {
-            text-align: center;
-        }
-        .upload-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
-        .upload-box {
-            background-color: #f9f9f9;
-            border: 2px dashed #007bff;
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            transition: background-color 0.3s;
-            position: relative;
-        }
-        .upload-box:hover {
-            background-color: #e9ecef;
-        }
-        .upload-box input[type="file"] {
-            display: none;
-        }
-        .upload-box label {
-            display: block;
-            cursor: pointer;
-            color: #007bff;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        .upload-box p {
-            margin: 0;
-            color: #666;
-        }
-        .file-name {
-            margin-top: 10px;
-            font-size: 16px;
-            color: #333;
-        }
-    </style>
+  <title>File Upload and Chat</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <style>
+      body {
+          margin: 0;
+          padding: 0;
+          height: 100vh;
+          overflow: hidden;
+      }
+      .container {
+          display: flex;
+          height: 100%;
+      }
+      .sidebar {
+          width: 250px;
+          background-color: #20232a;
+          color: #61dafb;
+          min-height: 100vh;
+          position: fixed;
+          top: 0;
+          left: 0;
+          transition: all 0.3s ease;
+          overflow: hidden;
+          z-index: 1000;
+      }
+      .sidebar.collapsed {
+          width: 80px;
+      }
+      .sidebar a {
+          display: block;
+          color: #61dafb;
+          padding: 15px;
+          text-decoration: none;
+          white-space: nowrap;
+      }
+      .sidebar a:hover {
+          background-color: #282c34;
+      }
+      .sidebar .sidebar-toggle {
+          position: absolute;
+          top: 15px;
+          right: -35px;
+          width: 30px;
+          height: 30px;
+          background-color: #61dafb;
+          color: #20232a;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 15px;
+          cursor: pointer;
+          transition: right 0.3s;
+      }
+      .sidebar.collapsed .sidebar-toggle {
+          right: -30px;
+      }
+      .content {
+          margin-left: 250px;
+          flex: 1;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+      }
+      .sidebar.collapsed ~ .content {
+          margin-left: 80px;
+      }
+      .chat-box {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          overflow-y: auto;
+          background-color: #ffffff;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 10px;
+          position: relative;
+          font-size: 18px; /* Increased font size */
+      }
+      .chat-box::-webkit-scrollbar {
+          width: 8px;
+      }
+      .chat-box::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 4px;
+      }
+      .chat-box::-webkit-scrollbar-thumb:hover {
+          background: #555;
+      }
+      .message {
+          margin-bottom: 10px;
+          display: flex;
+          align-items: flex-end;
+      }
+      .message.user {
+          justify-content: flex-end;
+      }
+      .message.user .message-bubble {
+          background-color: #007bff;
+          color: #ffffff;
+          padding: 10px;
+          border-radius: 15px;
+          max-width: 60%;
+          text-align: right;
+      }
+      .message.bot .message-bubble {
+          background-color: #e9ecef;
+          color: #000;
+          padding: 10px;
+          border-radius: 15px;
+          max-width: 60%;
+      }
+      .input-area {
+          display: flex;
+          align-items: center;
+          margin-top: 10px;
+      }
+      .input-area input {
+          flex: 1;
+          border-radius: 20px;
+          border: 1px solid #ddd;
+          padding: 10px;
+          margin-right: 10px;
+          font-size: 16px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .input-area button {
+          background-color: #007bff;
+          color: #ffffff;
+          border: none;
+          border-radius: 20px;
+          padding: 10px 20px;
+          font-size: 16px;
+          cursor: pointer;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .input-area button:hover {
+          background-color: #0056b3;
+      }
+      .btn-secondary {
+          margin-top: 10px;
+      }
+      .sidebar.collapsed .sidebar a {
+          text-align: center;
+      }
+      .upload-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+      }
+      .upload-box {
+          background-color: #f9f9f9;
+          border: 2px dashed #007bff;
+          border-radius: 10px;
+          padding: 30px;
+          text-align: center;
+          transition: background-color 0.3s;
+          position: relative;
+      }
+      .upload-box:hover {
+          background-color: #e9ecef;
+      }
+      .upload-box input[type="file"] {
+          display: none;
+      }
+      .upload-box label {
+          display: block;
+          cursor: pointer;
+          color: #007bff;
+          font-size: 16px;
+          margin-bottom: 10px;
+      }
+      .upload-box p {
+          margin: 0;
+          color: #666;
+      }
+      .file-name {
+          margin-top: 10px;
+          font-size: 16px;
+          color: #333;
+      }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <div class="sidebar-toggle" onclick="toggleSidebar()">☰</div>
-            <h3 class="text-center">Menu</h3>
-            <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('upload_files') }}">Upload Files</a>
-            <a href="{{ url_for('chat') }}">Chat</a>
+<div class="container">
+  <div class="sidebar">
+    <div class="sidebar-toggle" onclick="toggleSidebar()">☰</div>
+    <h3 class="text-center">Menu</h3>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('upload_files') }}">Upload Files</a>
+    <a href="{{ url_for('chat') }}">Chat</a>
+  </div>
+  <div class="content">
+    {% if section == 'upload' %}
+    <h1>Upload Files</h1>
+    <div class="upload-container">
+      <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
+        <div class="upload-box">
+          <label for="file-input">Click to select files</label>
+          <input type="file" id="file-input" name="files[]" multiple>
+          <p>or drag and drop files here</p>
+          <div id="file-name" class="file-name">No file chosen</div>
         </div>
-        <div class="content">
-            {% if section == 'upload' %}
-                <h1>Upload Files</h1>
-                <div class="upload-container">
-                    <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
-                        <div class="upload-box">
-                            <label for="file-input">Click to select files</label>
-                            <input type="file" id="file-input" name="files[]" multiple>
-                            <p>or drag and drop files here</p>
-                            <div id="file-name" class="file-name">No file chosen</div>
-                        </div>
-                        <button class="btn btn-primary" type="submit">Upload</button>
-                    </form>
-                </div>
-                {% if uploaded_files %}
-                    <h3>Uploaded Files:</h3>
-                    <ul>
-                        {% for file in uploaded_files %}
-                            <li>{{ file }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% elif section == 'chat' %}
-                <h1>Chat</h1>
-                <div class="chat-box" id="chat-box">
-                    {% for entry in chat_history %}
-                        <div class="message {{ entry.role }}">
-                            <div class="message-bubble">{{ entry.message }}</div>
-                        </div>
-                    {% endfor %}
-                </div>
-                <div class="input-area">
-                    <form action="{{ url_for('chat') }}" method="post" style="width: 100%;">
-                        <input type="text" name="message" placeholder="Type your message here..." required>
-                        <button type="submit">Send</button>
-                    </form>
-                </div>
-                <a class="btn btn-secondary" href="{{ url_for('clear_chat') }}">Clear Chat</a>
-            {% endif %}
-        </div>
+        <button class="btn btn-primary" type="submit">Upload</button>
+      </form>
     </div>
-    <script>
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('collapsed');
-            document.querySelector('.content').classList.toggle('collapsed');
-        }
+    {% if uploaded_files %}
+    <h3>Uploaded Files:</h3>
+    <ul>
+      {% for file in uploaded_files %}
+      <li>{{ file }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% elif section == 'chat' %}
+    <h1>Chat Prompt</h1>
+    <div class="chat-box">
+      {% for message in chat_history %}
+      <div class="message {{ message.role }}">
+        <div class="message-bubble">{{ message.message }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <form action="{{ url_for('chat') }}" method="post" class="input-area">
+      <input type="text" class="form-control" name="message" placeholder="Type your message" required>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+    <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
+    {% else %}
+    <h1>Welcome</h1>
+    <p>Select an option from the menu.</p>
+    {% endif %}
+  </div>
+</div>
 
-        document.getElementById('file-input').addEventListener('change', function() {
-            const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
-            document.getElementById('file-name').textContent = fileName;
-        });
+<script>
+  function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('collapsed');
+    document.querySelector('.content').classList.toggle('collapsed');
+  }
 
-        function autoScrollToBottom() {
-            const chatBox = document.getElementById('chat-box');
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+  document.getElementById('file-input').addEventListener('change', function() {
+    const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
+    document.getElementById('file-name').textContent = fileName;
+  });
 
-        window.onload = autoScrollToBottom;
-    </script>
+  function autoScrollToBottom() {
+    const chatBox = document.getElementById('chat-box');
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  window.onload = autoScrollToBottom;
+</script>
 </body>
 </html>
