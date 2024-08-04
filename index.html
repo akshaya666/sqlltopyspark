@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>File Upload and Chat</title>
+    <title>Chat Application</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <style>
@@ -10,6 +10,7 @@
             padding: 0;
             height: 100vh;
             overflow: hidden;
+            font-family: Arial, sans-serif;
         }
         .container {
             display: flex;
@@ -64,6 +65,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            height: 100%;
         }
         .sidebar.collapsed ~ .content {
             margin-left: 80px;
@@ -79,7 +81,7 @@
             padding: 10px;
             margin-bottom: 10px;
             position: relative;
-            font-size: 18px; /* Increased font size */
+            font-size: 16px;
         }
         .chat-box::-webkit-scrollbar {
             width: 8px;
@@ -236,7 +238,7 @@
                 </div>
                 <div class="input-area">
                     <form action="{{ url_for('chat') }}" method="post">
-                        <input type="text" name="message" placeholder="Type your message here...">
+                        <input type="text" name="message" placeholder="Type your message here..." required>
                         <button type="submit">Send</button>
                     </form>
                 </div>
@@ -254,6 +256,10 @@
             const fileName = event.target.files.length ? event.target.files[0].name : 'No file chosen';
             document.getElementById('file-name').textContent = fileName;
         });
+        
+        // Auto-scroll chat box
+        const chatBox = document.getElementById('chat-box');
+        chatBox.scrollTop = chatBox.scrollHeight;
     </script>
 </body>
 </html>
