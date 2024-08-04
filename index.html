@@ -200,13 +200,15 @@
             {% if section == 'upload' %}
                 <h1>Upload Files</h1>
                 <div class="upload-container">
-                    <div class="upload-box">
-                        <label for="file-input">Click to select files</label>
-                        <input type="file" id="file-input" name="files[]" multiple>
-                        <p>or drag and drop files here</p>
-                        <div id="file-name" class="file-name">No file chosen</div>
-                    </div>
-                    <button class="btn btn-primary" id="upload-button">Upload</button>
+                    <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
+                        <div class="upload-box">
+                            <label for="file-input">Click to select files</label>
+                            <input type="file" id="file-input" name="files[]" multiple>
+                            <p>or drag and drop files here</p>
+                            <div id="file-name" class="file-name">No file chosen</div>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Upload</button>
+                    </form>
                 </div>
                 {% if uploaded_files %}
                     <h3>Uploaded Files:</h3>
@@ -225,40 +227,25 @@
                         </div>
                     {% endfor %}
                 </div>
-                <form action="{{ url_for('chat') }}" method="post" id="chat-form" class="input-area">
-                    <input type="text" name="message" id="message-input" placeholder="Type a message..." required>
-                    <button type="submit">Send</button>
-                </form>
-                <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
+                <div class="input-area">
+                    <form action="{{ url_for('chat') }}" method="post">
+                        <input type="text" name="message" placeholder="Type your message here...">
+                        <button type="submit">Send</button>
+                    </form>
+                </div>
+                <a class="btn btn-secondary" href="{{ url_for('clear_chat') }}">Clear Chat</a>
             {% endif %}
         </div>
     </div>
-
     <script>
         function toggleSidebar() {
             document.querySelector('.sidebar').classList.toggle('collapsed');
+            document.querySelector('.content').classList.toggle('collapsed');
         }
-
-        document.getElementById('chat-form').addEventListener('submit', function() {
-            setTimeout(function() {
-                var chatBox = document.getElementById('chat-box');
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 100);
-        });
-
-        window.onload = function() {
-            var chatBox = document.getElementById('chat-box');
-            chatBox.scrollTop = chatBox.scrollHeight;
-        };
-
-        document.getElementById('upload-button').addEventListener('click', function() {
-            document.getElementById('file-input').click();
-        });
-
-        document.getElementById('file-input').addEventListener('change', function() {
-            var fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
+        
+        document.getElementById('file-input').addEventListener('change', function(event) {
+            const fileName = event.target.files.length ? event.target.files[0].name : 'No file chosen';
             document.getElementById('file-name').textContent = fileName;
-            this.form.submit();
         });
     </script>
 </body>
