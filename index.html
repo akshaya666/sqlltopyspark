@@ -6,7 +6,7 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Add jQuery -->
   <style>
       body {
           margin: 0;
@@ -82,8 +82,8 @@
           padding: 10px;
           margin-bottom: 10px;
           position: relative;
-          font-size: 18px;
-          max-height: 70vh;
+          font-size: 18px; /* Increased font size */
+          max-height: 70vh; /* Adjusted height */
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -163,8 +163,8 @@
           text-align: center;
           transition: background-color 0.3s;
           position: relative;
-          width: 100%;
-          max-width: 600px;
+          width: 100%; /* Increased width */
+          max-width: 600px; /* Max width */
       }
       .upload-box:hover {
           background-color: #e9ecef;
@@ -187,9 +187,6 @@
           margin-top: 10px;
           font-size: 16px;
           color: #333;
-      }
-      .dropdown-container {
-          margin-bottom: 10px;
       }
   </style>
 </head>
@@ -228,7 +225,7 @@
     <h1>Chat Prompt</h1>
     <div class="dropdown-container">
       <label for="document-select">Select Document:</label>
-      <select id="document-select" name="selected_document">
+      <select id="document-select" name="selected_document" onchange="updateDocument()">
         <option value="">Select a document</option>
         {% for document in documents %}
         <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
@@ -261,12 +258,12 @@
   }
 
   document.getElementById('file-input').addEventListener('change', function() {
-    const fileName = this.files.length > 0 ? Array.from(this.files).map(file => file.name).join(', ') : 'No file chosen';
+    const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
     document.getElementById('file-name').textContent = fileName;
   });
 
-  document.getElementById('document-select').addEventListener('change', function() {
-    const selectedDocument = this.value;
+  function updateDocument() {
+    const selectedDocument = document.getElementById('document-select').value;
     fetch('/update_document', {
       method: 'POST',
       headers: {
@@ -276,7 +273,7 @@
         'selected_document': selectedDocument
       })
     });
-  });
+  }
 
   function autoScrollToBottom() {
     const chatBox = document.getElementById('chat-box');
