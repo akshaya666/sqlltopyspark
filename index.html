@@ -82,8 +82,8 @@
           padding: 10px;
           margin-bottom: 10px;
           position: relative;
-          font-size: 18px; /* Increased font size */
-          max-height: 70vh; /* Adjusted height */
+          font-size: 18px;
+          max-height: 70vh;
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -163,8 +163,8 @@
           text-align: center;
           transition: background-color 0.3s;
           position: relative;
-          width: 100%; /* Increased width */
-          max-width: 600px; /* Max width */
+          width: 100%;
+          max-width: 600px;
       }
       .upload-box:hover {
           background-color: #e9ecef;
@@ -197,11 +197,33 @@
 <div class="container">
   <div class="sidebar">
     <div class="sidebar-toggle" onclick="toggleSidebar()">☰</div>
-    <a href="#">Home</a>
-    <a href="#">Upload</a>
-    <a href="#">Chat</a>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('upload_files') }}">Upload Files</a>
+    <a href="{{ url_for('chat') }}">Chat</a>
   </div>
   <div class="content">
+    {% if section == 'upload' %}
+    <h1>Upload Files</h1>
+    <div class="upload-container">
+      <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
+        <div class="upload-box">
+          <label for="file-input">Click to select files</label>
+          <input type="file" id="file-input" name="files[]" multiple>
+          <p>or drag and drop files here</p>
+          <div id="file-name" class="file-name">No file chosen</div>
+        </div>
+        <button class="btn btn-primary" type="submit">Upload</button>
+      </form>
+    </div>
+    {% if uploaded_files %}
+    <h3>Uploaded Files:</h3>
+    <ul>
+      {% for file in uploaded_files %}
+      <li>{{ file }}</li>
+      {% endfor %}
+    </ul>
+    {% elif section == 'chat' %}
+    <h1>Chat Prompt</h1>
     <div class="dropdown-container">
         <label for="document-select">Select Document:</label>
         <select id="document-select" class="form-control">
@@ -210,7 +232,7 @@
             {% endfor %}
         </select>
     </div>
-    <div class="chat-box">
+    <div class="chat-box" id="chat-box">
       {% for entry in chat_history %}
         <div class="message {% if entry.role == 'user' %}user{% else %}bot{% endif %}">
             <div class="message-bubble">{{ entry.message }}</div>
@@ -219,11 +241,15 @@
     </div>
     <div class="input-area">
       <form action="{{ url_for('chat') }}" method="POST" id="chat-form">
-        <input type="text" name="message" placeholder="Type a message...">
+        <input type="text" name="message" placeholder="Type a message..." required>
         <button type="submit">Send</button>
       </form>
     </div>
     <button class="btn btn-secondary" onclick="clearChat()">Clear Chat</button>
+    {% else %}
+    <h1>Welcome</h1>
+    <p>Select an option from the menu.</p>
+    {% endif %}
   </div>
 </div>
 
