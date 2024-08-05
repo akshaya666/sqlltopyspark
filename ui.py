@@ -21,14 +21,18 @@ def upload_files():
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
-    global selected_documents, chat_history
-    if request.method == 'POST':
-        message = request.form['message']
-        chat_history.append({'role': 'user', 'message': message})
-        chat_history.append({'role': 'bot', 'message': f"Echo: {message}"})
-        selected_documents = request.form.getlist('selected_documents[]')
-    return render_template('index.html', section='chat', dummy_documents=dummy_documents, selected_documents=selected_documents, chat_history=chat_history)
+    documents = ['Doc1.pdf', 'Doc2.docx', 'Doc3.pptx']  # Example documents
+    if 'selected_documents' not in session:
+        session['selected_documents'] = []
 
+    if request.method == 'POST':
+        message = request.form.get('message', '').strip()
+        if message:
+            session['chat_history'].append({'role': 'user', 'message': message})
+            bot_message = f"ChatBot: {message}"
+            session['chat_history'].append({'role': 'bot', 'message': bot_message})
+
+    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), documents=documents, selected_documents=session.get('selected_documents', []))
 @app.route('/clear_chat')
 def clear_chat():
     global chat_history
