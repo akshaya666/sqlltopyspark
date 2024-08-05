@@ -3,7 +3,7 @@ import os
 from datetime import timedelta
 
 app = Flask(__name__)
-app.secret_key = 'sdf34987tymns037ut3n0tu30jrgj3klfgu430g98q90gro'  # random set of characters
+app.secret_key = 'sdf34987tymns037ut3n0tu30jrgj3klfgu430g98q90gro'
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 app.config['SESSION_COOKIE_SECURE'] = False
@@ -18,7 +18,7 @@ DOCUMENTS = ['Document 1', 'Document 2', 'Document 3']
 def home():
     session['dummy'] = '1'
     session['chat_history'] = []
-    session['selected_document'] = None  # Initialize selected document
+    session['selected_document'] = DOCUMENTS[0]  # Set default selected document
     return render_template('index.html', section='home', documents=DOCUMENTS)
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -44,7 +44,6 @@ def chat():
         if 'message' in request.form:
             message = request.form.get('message', '').strip()
             if message:
-                session['dummy'] = '2'
                 session['chat_history'].append({'role': 'user', 'message': message})
 
                 # Simulate a bot response
