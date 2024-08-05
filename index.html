@@ -253,7 +253,7 @@
         <form id="documentSelectForm">
           {% for document in dummy_documents %}
           <div class="dropdown-item">
-            <input type="checkbox" id="doc-{{ document }}" name="selected_documents[]" value="{{ document }}" onchange="updateSelectedDocuments(this)">
+            <input type="checkbox" id="doc-{{ document }}" name="selected_documents" value="{{ document }}" onchange="updateSelectedDocuments(this)">
             <label for="doc-{{ document }}">{{ document }}</label>
           </div>
           {% endfor %}
@@ -320,3 +320,4 @@
 </script>
 </body>
 </html>
+
