@@ -3,7 +3,7 @@
 <head>
   <title>File Upload and Chat</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <style>
@@ -81,8 +81,8 @@
           padding: 10px;
           margin-bottom: 10px;
           position: relative;
-          font-size: 18px;
-          max-height: 400px; /* Adjusted height */
+          font-size: 18px; /* Increased font size */
+          max-height: 70vh; /* Adjusted height */
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -147,8 +147,45 @@
       .btn-secondary {
           margin-top: 10px;
       }
-      .sidebar.collapsed .sidebar a {
+      .upload-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+      }
+      .upload-box {
+          background-color: #f9f9f9;
+          border: 2px dashed #007bff;
+          border-radius: 10px;
+          padding: 30px;
           text-align: center;
+          transition: background-color 0.3s;
+          position: relative;
+          width: 100%; /* Increased width */
+          max-width: 600px; /* Max width */
+      }
+      .upload-box:hover {
+          background-color: #e9ecef;
+      }
+      .upload-box input[type="file"] {
+          display: none;
+      }
+      .upload-box label {
+          display: block;
+          cursor: pointer;
+          color: #007bff;
+          font-size: 16px;
+          margin-bottom: 10px;
+      }
+      .upload-box p {
+          margin: 0;
+          color: #666;
+      }
+      .file-name {
+          margin-top: 10px;
+          font-size: 16px;
+          color: #333;
       }
   </style>
 </head>
@@ -162,46 +199,44 @@
     <a href="{{ url_for('chat') }}">Chat</a>
   </div>
   <div class="content">
-    {% if section == 'home' %}
-    <h1>Welcome to the Home Page</h1>
-    {% elif section == 'upload' %}
+    {% if section == 'upload' %}
+    <h1>Upload Files</h1>
     <div class="upload-container">
-      <div class="upload-box">
-        <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
-          <label for="file-upload">Choose files to upload</label>
-          <input type="file" name="files[]" id="file-upload" multiple>
-          <button type="submit" class="btn btn-primary">Upload</button>
-        </form>
-        {% if uploaded_files %}
-        <div class="file-name">
-          <h4>Uploaded Files:</h4>
-          <ul>
-            {% for file in uploaded_files %}
-            <li>{{ file }}</li>
-            {% endfor %}
-          </ul>
+      <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
+        <div class="upload-box">
+          <label for="file-input">Click to select files</label>
+          <input type="file" id="file-input" name="files[]" multiple>
+          <p>or drag and drop files here</p>
+          <div id="file-name" class="file-name">No file chosen</div>
         </div>
-        {% endif %}
-      </div>
+        <button class="btn btn-primary" type="submit">Upload</button>
+      </form>
     </div>
+    {% if uploaded_files %}
+    <h3>Uploaded Files:</h3>
+    <ul>
+      {% for file in uploaded_files %}
+      <li>{{ file }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
-    <div class="chat-box">
-      <div id="chat-history">
-        {% for message in chat_history %}
-        <div class="message {{ message.role }}">
-          <div class="message-bubble">{{ message.message }}</div>
-        </div>
-        {% endfor %}
+    <div class="chat-box" id="chat-box">
+      {% for message in chat_history %}
+      <div class="message {{ message.role }}">
+        <div class="message-bubble">{{ message.message }}</div>
       </div>
+      {% endfor %}
     </div>
-    <form id="chat-form" action="{{ url_for('chat') }}" method="post">
-      <div class="input-area">
-        <input type="text" name="message" id="message" placeholder="Type a message...">
-        <button type="submit" class="btn btn-primary">Send</button>
-      </div>
+    <form action="{{ url_for('chat') }}" method="post" class="input-area">
+      <input type="text" class="form-control" name="message" placeholder="Type your message" required>
+      <button type="submit" class="btn btn-primary">Send</button>
     </form>
-    <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary mt-3">Clear Chat</a>
+    <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
+    {% else %}
+    <h1>Welcome</h1>
+    <p>Select an option from the menu.</p>
     {% endif %}
   </div>
 </div>
@@ -209,35 +244,20 @@
 <script>
   function toggleSidebar() {
     document.querySelector('.sidebar').classList.toggle('collapsed');
-    document.querySelector('.content').classList.toggle('expanded');
+    document.querySelector('.content').classList.toggle('collapsed');
   }
 
-  $(document).ready(function () {
-    // Handle chat form submission
-    $('#chat-form').on('submit', function (e) {
-      e.preventDefault();
-
-      $.ajax({
-        type: 'POST',
-        url: $(this).attr('action'),
-        data: $(this).serialize(),
-        success: function (response) {
-          // Update chat history
-          $('#chat-history').empty();
-          response.chat_history.forEach(function (msg) {
-            $('#chat-history').append(
-              '<div class="message ' + msg.role + '"><div class="message-bubble">' + msg.message + '</div></div>'
-            );
-          });
-          // Clear the input field
-          $('#message').val('');
-          // Scroll to bottom
-          var chatBox = document.querySelector('.chat-box');
-          chatBox.scrollTop = chatBox.scrollHeight;
-        }
-      });
-    });
+  document.getElementById('file-input').addEventListener('change', function() {
+    const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
+    document.getElementById('file-name').textContent = fileName;
   });
+
+  function autoScrollToBottom() {
+    const chatBox = document.getElementById('chat-box');
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  window.onload = autoScrollToBottom;
 </script>
 </body>
 </html>
