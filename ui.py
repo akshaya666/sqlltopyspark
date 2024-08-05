@@ -43,23 +43,22 @@ def chat():
             bot_message = f"ChatBot: {message}"
             session['chat_history'].append({'role': 'bot', 'message': bot_message})
 
-        # Redirect to the chat page after form submission to avoid form resubmission warning
-        return redirect(url_for('chat'))
+    documents = ['Document 1', 'Document 2', 'Document 3']  # Example documents
+    selected_document = session.get('selected_document', '')
 
-    documents = session.get('documents', [])  # Example: replace with actual list
-    selected_document = session.get('selected_document', None)
-    
-    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), documents=documents, selected_document=selected_document)
+    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []),
+                           documents=documents, selected_document=selected_document)
+
+@app.route('/select_document', methods=['POST'])
+def select_document():
+    selected_document = request.form.get('document', '')
+    session['selected_document'] = selected_document
+    return redirect(url_for('chat'))
 
 @app.route('/clear_chat')
 def clear_chat():
     session.pop('chat_history', None)
-    return redirect(url_for('chat'))
-
-@app.route('/select_document', methods=['POST'])
-def select_document():
-    selected_document = request.form.get('document')
-    session['selected_document'] = selected_document
+    session.pop('selected_document', None)
     return redirect(url_for('chat'))
 
 if __name__ == '__main__':
