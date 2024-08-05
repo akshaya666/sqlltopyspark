@@ -42,10 +42,12 @@ def chat():
         session['selected_document'] = None
 
     if request.method == 'POST':
+        # Handle document selection
         selected_document = request.form.get('selected_document')
         if selected_document:
             session['selected_document'] = selected_document
         
+        # Handle chat message
         message = request.form.get('message', '').strip()
         if message:
             session['chat_history'].append({'role': 'user', 'message': message})
