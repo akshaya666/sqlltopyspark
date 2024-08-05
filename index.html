@@ -82,7 +82,7 @@
           margin-bottom: 10px;
           position: relative;
           font-size: 18px; /* Increased font size */
-          max-height: 60vh; /* Adjust height */
+          max-height: 70vh; /* Adjusted height */
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -122,7 +122,7 @@
           align-items: center;
           margin-top: 10px;
       }
-      .input-area textarea {
+      .input-area input {
           flex: 1;
           border-radius: 20px;
           border: 1px solid #ddd;
@@ -130,7 +130,6 @@
           margin-right: 10px;
           font-size: 16px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          resize: none;
       }
       .input-area button {
           background-color: #007bff;
@@ -148,9 +147,6 @@
       .btn-secondary {
           margin-top: 10px;
       }
-      .sidebar.collapsed .sidebar a {
-          text-align: center;
-      }
       .upload-container {
           display: flex;
           flex-direction: column;
@@ -166,7 +162,8 @@
           text-align: center;
           transition: background-color 0.3s;
           position: relative;
-          width: 80%;
+          width: 100%; /* Increased width */
+          max-width: 600px; /* Max width */
       }
       .upload-box:hover {
           background-color: #e9ecef;
@@ -189,17 +186,6 @@
           margin-top: 10px;
           font-size: 16px;
           color: #333;
-      }
-      .selected-documents {
-          margin-bottom: 10px;
-      }
-      .pill {
-          display: inline-block;
-          background-color: #007bff;
-          color: #fff;
-          padding: 5px 10px;
-          border-radius: 20px;
-          margin: 2px;
       }
   </style>
 </head>
@@ -236,11 +222,6 @@
     {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
-    <div class="selected-documents">
-      {% for doc in selected_documents %}
-      <span class="pill">{{ doc }}</span>
-      {% endfor %}
-    </div>
     <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
@@ -249,15 +230,7 @@
       {% endfor %}
     </div>
     <form action="{{ url_for('chat') }}" method="post" class="input-area">
-      <div class="form-group">
-        <label for="documents">Select Documents:</label>
-        <select id="documents" name="documents" class="form-control" multiple>
-          {% for document in documents %}
-          <option value="{{ document }}" {% if document in selected_documents %}selected{% endif %}>{{ document }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <textarea class="form-control" name="message" placeholder="Type your message" rows="2" required></textarea>
+      <input type="text" class="form-control" name="message" placeholder="Type your message" required>
       <button type="submit" class="btn btn-primary">Send</button>
     </form>
     <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
@@ -285,19 +258,6 @@
   }
 
   window.onload = autoScrollToBottom;
-
-  document.getElementById('documents').addEventListener('change', function() {
-    const selectedOptions = Array.from(this.selectedOptions).map(option => option.value);
-    const pillContainer = document.querySelector('.selected-documents');
-    pillContainer.innerHTML = ''; // Clear existing pills
-
-    selectedOptions.forEach(option => {
-      const pill = document.createElement('span');
-      pill.className = 'pill';
-      pill.textContent = option;
-      pillContainer.appendChild(pill);
-    });
-  });
 </script>
 </body>
 </html>
