@@ -39,3 +39,4 @@ class ChatGPTHandler:
         precise_answer = response.choices[0].message['content'].strip()
 
         return precise_answer
+
