@@ -82,7 +82,7 @@
           margin-bottom: 10px;
           position: relative;
           font-size: 18px;
-          height: 30vh; /* Adjusted height for smaller chat window */
+          height: 40vh; /* Adjusted height for chat window */
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -165,8 +165,6 @@
           text-align: center;
           transition: background-color 0.3s;
           position: relative;
-          min-height: 200px; /* Increased minimum height */
-          width: 80%; /* Increased width */
       }
       .upload-box:hover {
           background-color: #e9ecef;
@@ -190,26 +188,21 @@
           font-size: 16px;
           color: #333;
       }
-      .document-select {
-          margin-bottom: 10px;
-      }
       .selected-documents {
-          display: flex;
-          flex-wrap: wrap;
           margin-bottom: 10px;
       }
-      .document-pill {
+      .selected-documents .pill {
+          display: inline-block;
           background-color: #007bff;
           color: #ffffff;
-          border-radius: 15px;
           padding: 5px 10px;
-          margin: 5px;
-          display: inline-block;
+          border-radius: 15px;
+          margin-right: 5px;
+          margin-bottom: 5px;
       }
       .dropdown-menu {
           max-height: 200px;
           overflow-y: auto;
-          width: 300px; /* Adjusted width */
       }
   </style>
 </head>
@@ -223,116 +216,82 @@
     <a href="{{ url_for('chat') }}">Chat</a>
   </div>
   <div class="content">
-    {% if section == 'upload' %}
+    {% if section == 'home' %}
+    <h1>Welcome to the Home Page</h1>
+    {% elif section == 'upload' %}
     <h1>Upload Files</h1>
     <div class="upload-container">
-      <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
-        <div class="upload-box">
-          <label for="file-input">Click to select files</label>
-          <input type="file" id="file-input" name="files[]" multiple>
-          <p>or drag and drop files here</p>
-          <div id="file-name" class="file-name">No file chosen</div>
+      <div class="upload-box">
+        <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
+          <label for="file-upload">Choose files to upload</label>
+          <input type="file" id="file-upload" name="files[]" multiple>
+          <p>Drag and drop files here or click to select</p>
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        {% if uploaded_files %}
+        <div class="file-name">
+          <h5>Uploaded Files:</h5>
+          <ul>
+            {% for file in uploaded_files %}
+              <li>{{ file }}</li>
+            {% endfor %}
+          </ul>
         </div>
-        <button class="btn btn-primary" type="submit">Upload</button>
-      </form>
+        {% endif %}
+      </div>
     </div>
-    {% if uploaded_files %}
-    <h3>Uploaded Files:</h3>
-    <ul>
-      {% for file in uploaded_files %}
-      <li>{{ file }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
     {% elif section == 'chat' %}
-    <h1>Chat Prompt</h1>
-    <div class="document-select">
-      <button class="btn btn-primary" data-toggle="modal" data-target="#documentModal">Select Documents</button>
-      <div id="selectedDocuments" class="selected-documents">
-        {% for document in selected_documents %}
-        <div class="document-pill" id="pill-{{ document }}">{{ document }}</div>
-        {% endfor %}
-      </div>
-    </div>
-    <div class="chat-box" id="chat-box">
-      {% for message in chat_history %}
-      <div class="message {{ message.role }}">
-        <div class="message-bubble">{{ message.message }}</div>
-      </div>
+    <h1>Chat with the Bot</h1>
+    <div class="selected-documents">
+      {% for doc in selected_documents %}
+        <span class="pill">{{ doc }}</span>
       {% endfor %}
     </div>
-    <form action="{{ url_for('chat') }}" method="post" class="input-area">
-      <input type="text" class="form-control" name="message" placeholder="Type your message" required>
-      <button type="submit" class="btn btn-primary">Send</button>
-    </form>
-    <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
-    {% else %}
-    <h1>Welcome</h1>
-    <p>Select an option from the menu.</p>
-    {% endif %}
-  </div>
-</div>
-
-<!-- Document Modal -->
-<div class="modal fade" id="documentModal" tabindex="-1" role="dialog" aria-labelledby="documentModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="documentModalLabel">Select Documents</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-check">
-          {% for document in documents %}
-          <input class="form-check-input" type="checkbox" value="{{ document }}" id="checkbox-{{ document }}" onchange="updateSelectedDocuments(this)">
-          <label class="form-check-label" for="checkbox-{{ document }}">
-            {{ document }}
-          </label>
+    <form action="{{ url_for('chat') }}" method="post" id="chat-form">
+      <div class="form-group">
+        <label for="documents-dropdown">Select Documents:</label>
+        <select id="documents-dropdown" name="selected_documents" class="form-control" multiple>
+          {% for doc in documents %}
+            <option value="{{ doc }}" {% if doc in selected_documents %}selected{% endif %}>{{ doc }}</option>
           {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <textarea id="message" name="message" class="form-control" rows="3" placeholder="Type your message here..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Send</button>
+      <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
+    </form>
+    <div class="chat-box">
+      {% for msg in chat_history %}
+        <div class="message {{ msg.role }}">
+          <div class="message-bubble">{{ msg.message }}</div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+      {% endfor %}
     </div>
+    {% endif %}
   </div>
 </div>
 
 <script>
   function toggleSidebar() {
-    document.querySelector('.sidebar').classList.toggle('collapsed');
-    document.querySelector('.content').classList.toggle('collapsed');
+    var sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('collapsed');
+    var content = document.querySelector('.content');
+    content.style.marginLeft = sidebar.classList.contains('collapsed') ? '80px' : '250px';
   }
 
-  document.getElementById('file-input').addEventListener('change', function() {
-    const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
-    document.getElementById('file-name').textContent = fileName;
+  $(document).ready(function() {
+    $('#documents-dropdown').on('change', function() {
+      var selectedOptions = $(this).find('option:selected');
+      var pills = $('.selected-documents');
+      pills.empty();
+      selectedOptions.each(function() {
+        var value = $(this).val();
+        pills.append('<span class="pill">' + value + '</span>');
+      });
+    });
   });
-
-  function updateSelectedDocuments(checkbox) {
-    const selectedDocumentsContainer = document.getElementById('selectedDocuments');
-    if (checkbox.checked) {
-      const pill = document.createElement('div');
-      pill.className = 'document-pill';
-      pill.textContent = checkbox.value;
-      pill.id = 'pill-' + checkbox.value;
-      selectedDocumentsContainer.appendChild(pill);
-    } else {
-      const pill = document.getElementById('pill-' + checkbox.value);
-      if (pill) {
-        selectedDocumentsContainer.removeChild(pill);
-      }
-    }
-  }
-
-  function autoScrollToBottom() {
-    const chatBox = document.getElementById('chat-box');
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  window.onload = autoScrollToBottom;
 </script>
 </body>
 </html>
