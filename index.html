@@ -6,7 +6,7 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Add jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
       body {
           margin: 0;
@@ -82,8 +82,8 @@
           padding: 10px;
           margin-bottom: 10px;
           position: relative;
-          font-size: 18px; /* Increased font size */
-          max-height: 70vh; /* Adjusted height */
+          font-size: 18px;
+          max-height: 70vh;
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -163,8 +163,8 @@
           text-align: center;
           transition: background-color 0.3s;
           position: relative;
-          width: 100%; /* Increased width */
-          max-width: 600px; /* Max width */
+          width: 100%;
+          max-width: 600px;
       }
       .upload-box:hover {
           background-color: #e9ecef;
@@ -226,16 +226,17 @@
     {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
-    <div class="dropdown-container">
-      <form id="document-form" action="{{ url_for('update_document') }}" method="post">
-        <select id="document-select" name="selected_document" class="custom-select">
-          <option value="">Select Document</option>
+    <form id="document-form" action="{{ url_for('update_document') }}" method="post">
+      <div class="dropdown-container">
+        <label for="document-select">Select Document:</label>
+        <select id="document-select" name="selected_document" onchange="updateDocument()">
+          <option value="">Select a document</option>
           {% for document in documents %}
           <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
           {% endfor %}
         </select>
-      </form>
-    </div>
+      </div>
+    </form>
     <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
@@ -261,6 +262,8 @@
     document.querySelector('.content').classList.toggle('collapsed');
   }
 
+  document.querySelector('.sidebar-toggle').addEventListener('click', toggleSidebar);
+
   document.getElementById('file-input').addEventListener('change', function() {
     const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
     document.getElementById('file-name').textContent = fileName;
@@ -271,12 +274,12 @@
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
+  function updateDocument() {
+    document.getElementById('document-form').submit();
+  }
+
   window.onload = autoScrollToBottom;
   window.onresize = autoScrollToBottom;
-
-  document.getElementById('document-select').addEventListener('change', function() {
-    document.getElementById('document-form').submit();
-  });
 </script>
 </body>
 </html>
