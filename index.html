@@ -82,7 +82,7 @@
           margin-bottom: 10px;
           position: relative;
           font-size: 18px; /* Increased font size */
-          height: 60vh; /* Adjusted height for smaller chat window */
+          height: 50vh; /* Adjusted height for smaller chat window */
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -191,8 +191,9 @@
       .document-select {
           margin-bottom: 10px;
       }
-      .document-select select {
-          width: 200px; /* Increased width */
+      .dropdown-menu {
+          max-height: 200px;
+          overflow-y: auto;
       }
       .selected-documents {
           display: flex;
@@ -243,14 +244,22 @@
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
     <div class="document-select">
-      <form action="{{ url_for('chat') }}" method="post" class="form-inline">
-        <select name="document" class="form-control mr-2">
-          {% for file in dummy_documents %}
-          <option value="{{ file }}">{{ file }}</option>
-          {% endfor %}
-        </select>
-        <button type="submit" class="btn btn-secondary">Select Document</button>
-      </form>
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="documentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Select Documents
+        </button>
+        <div class="dropdown-menu" aria-labelledby="documentDropdown">
+          <form action="{{ url_for('select_documents') }}" method="post">
+            {% for file in dummy_documents %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="selected_documents[]" value="{{ file }}" id="doc{{ loop.index }}">
+              <label class="form-check-label" for="doc{{ loop.index }}">{{ file }}</label>
+            </div>
+            {% endfor %}
+            <button class="btn btn-primary mt-2" type="submit">Apply</button>
+          </form>
+        </div>
+      </div>
     </div>
     <div class="selected-documents">
       {% for doc in selected_documents %}
