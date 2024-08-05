@@ -123,7 +123,7 @@
           margin-top: 10px;
       }
       .input-area input {
-          flex: 4;
+          flex: 1;
           border-radius: 20px;
           border: 1px solid #ddd;
           padding: 10px;
@@ -222,13 +222,15 @@
     {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
-    <form action="{{ url_for('chat') }}" method="post">
-      <select name="selected_document" class="form-control" style="margin-right: 10px; margin-bottom: 10px;">
-        <option value="" disabled {% if not selected_document %} selected {% endif %}>Select document</option>
-        {% for file in uploaded_files %}
-        <option value="{{ file }}" {% if file == selected_document %} selected {% endif %}>{{ file }}</option>
+    <form id="document-form" class="form-inline">
+      <label for="document-select" class="mr-2">Select Document:</label>
+      <select id="document-select" class="form-control mb-2 mr-sm-2">
+        <option value="">-- Select Document --</option>
+        {% for doc in dummy_docs %}
+        <option value="{{ doc }}">{{ doc }}</option>
         {% endfor %}
       </select>
+      <button type="button" class="btn btn-primary mb-2" onclick="updateDocument()">Update Document</button>
     </form>
     <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
@@ -237,9 +239,9 @@
       </div>
       {% endfor %}
     </div>
-    <form action="{{ url_for('chat') }}" method="post" class="input-area">
-      <input type="text" class="form-control" name="message" placeholder="Type your message" required style="flex: 4;">
-      <button type="submit" class="btn btn-primary" style="flex: 1;">Send</button>
+    <form id="chat-form" class="input-area" method="post">
+      <input type="text" class="form-control" name="message" placeholder="Type your message" required>
+      <button type="submit" class="btn btn-primary">Send</button>
     </form>
     <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
     {% else %}
@@ -266,6 +268,51 @@
   }
 
   window.onload = autoScrollToBottom;
+
+  // Update document in localStorage and handle chat form submission
+  function updateDocument() {
+    const selectedDocument = document.getElementById('document-select').value;
+    localStorage.setItem('selected_document', selectedDocument);
+  }
+
+  document.getElementById('chat-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const messageInput = this.querySelector('input[name="message"]');
+    const message = messageInput.value.trim();
+    const selectedDocument = localStorage.getItem('selected_document') || '';
+
+    if (message) {
+      fetch('/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          'message': message,
+          'selected_document': selectedDocument
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        updateChatHistory(data.chat_history);
+        messageInput.value = '';
+        autoScrollToBottom();
+      });
+    }
+  });
+
+  function updateChatHistory(messages) {
+    const chatBox = document.getElementById('chat-box');
+    chatBox.innerHTML = '';
+    messages.forEach(message => {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${message.role}`;
+      messageDiv.innerHTML = `<div class="message-bubble">${message.message}</div>`;
+      chatBox.appendChild(messageDiv);
+    });
+  }
 </script>
 </body>
 </html>
+
