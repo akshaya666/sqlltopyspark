@@ -187,6 +187,22 @@
           font-size: 16px;
           color: #333;
       }
+      .document-select {
+          margin-bottom: 10px;
+      }
+      .selected-documents {
+          display: flex;
+          flex-wrap: wrap;
+          margin-bottom: 10px;
+      }
+      .document-pill {
+          background-color: #007bff;
+          color: #ffffff;
+          border-radius: 15px;
+          padding: 5px 10px;
+          margin: 5px;
+          display: inline-block;
+      }
   </style>
 </head>
 <body>
@@ -222,6 +238,21 @@
     {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
+    <div class="document-select">
+      <form action="{{ url_for('chat') }}" method="post" class="form-inline">
+        <select name="document" class="form-control mr-2">
+          {% for file in uploaded_files %}
+          <option value="{{ file }}">{{ file }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-secondary">Select Document</button>
+      </form>
+    </div>
+    <div class="selected-documents">
+      {% for doc in selected_documents %}
+      <div class="document-pill">{{ doc }}</div>
+      {% endfor %}
+    </div>
     <div class="chat-box">
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
