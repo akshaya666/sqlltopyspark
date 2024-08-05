@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 import os
 
 app = Flask(__name__)
@@ -49,15 +49,18 @@ def chat():
                 bot_message = f"ChatBot: {message}"
                 session['chat_history'].append({'role': 'bot', 'message': bot_message})
 
-        if 'selected_document' in request.form:
-            session['selected_document'] = request.form.get('selected_document')
-
     return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), selected_document=session.get('selected_document'))
 
 @app.route('/clear_chat')
 def clear_chat():
     session.pop('chat_history', None)
     return redirect(url_for('chat'))
+
+@app.route('/update_document', methods=['POST'])
+def update_document():
+    selected_document = request.form.get('selected_document')
+    session['selected_document'] = selected_document
+    return jsonify(success=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
