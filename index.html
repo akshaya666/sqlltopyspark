@@ -224,9 +224,9 @@
     <h1>Chat Prompt</h1>
     <form action="{{ url_for('chat') }}" method="post" class="input-area">
       <select name="selected_document" class="form-control" style="margin-right: 10px; margin-bottom: 10px;">
-        <option value="" disabled selected>Select document</option>
+        <option value="" disabled {{ '' if selected_document else 'selected' }}>Select document</option>
         {% for file in uploaded_files %}
-        <option value="{{ file }}">{{ file }}</option>
+        <option value="{{ file }}" {{ 'selected' if file == selected_document else '' }}>{{ file }}</option>
         {% endfor %}
       </select>
     </form>
