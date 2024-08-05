@@ -3,12 +3,11 @@ import os
 from datetime import timedelta
 
 app = Flask(__name__)
-app.secret_key = 'sdf34987tymns037ut3n0tu30jrgj3klfgu430g98q90gro'  # random set of characters
+app.secret_key = 'sdf34987tymns037ut3n0tu30jrgj3klfgu430g98q90gro'
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 app.config['SESSION_COOKIE_SECURE'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=5)
-
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
@@ -17,10 +16,10 @@ DOCUMENTS = ['Document 1', 'Document 2', 'Document 3']
 
 @app.route('/')
 def home():
+    session['chat_history'] = []
     if 'selected_document' not in session:
-        session['selected_document'] = DOCUMENTS[0]  # Default document
-    session.setdefault('chat_history', [])
-    return render_template('index.html', section='home', documents=DOCUMENTS, selected_document=session['selected_document'])
+        session['selected_document'] = DOCUMENTS[0]  # Set a default document if not already set
+    return render_template('index.html', section='home', documents=DOCUMENTS)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_files():
@@ -36,19 +35,27 @@ def upload_files():
                 file.save(file_path)
                 uploaded_files.append(file.filename)
 
-        return render_template('index.html', section='upload', uploaded_files=uploaded_files, documents=DOCUMENTS, selected_document=session['selected_document'])
-    return render_template('index.html', section='upload', documents=DOCUMENTS, selected_document=session['selected_document'])
+        return render_template('index.html', section='upload', uploaded_files=uploaded_files, documents=DOCUMENTS)
+    return render_template('index.html', section='upload', documents=DOCUMENTS)
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
-    if request.method == 'POST':
-        message = request.form.get('message', '').strip()
-        if message:
-            session['chat_history'].append({'role': 'user', 'message': message})
-            bot_message = f"ChatBot: {message}"
-            session['chat_history'].append({'role': 'bot', 'message': bot_message})
+    if 'chat_history' not in session:
+        session['chat_history'] = []
+    if 'selected_document' not in session:
+        session['selected_document'] = DOCUMENTS[0]
 
-    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), selected_document=session['selected_document'])
+    if request.method == 'POST':
+        if 'message' in request.form:
+            message = request.form.get('message', '').strip()
+            if message:
+                session['chat_history'].append({'role': 'user', 'message': message})
+
+                # Simulate a bot response
+                bot_message = f"ChatBot: {message}"
+                session['chat_history'].append({'role': 'bot', 'message': bot_message})
+
+    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), selected_document=session.get('selected_document'), documents=DOCUMENTS)
 
 @app.route('/clear_chat')
 def clear_chat():
@@ -62,4 +69,4 @@ def update_document():
     return jsonify(success=True)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
