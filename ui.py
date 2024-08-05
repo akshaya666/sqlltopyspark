@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+from flask import Flask, render_template, request, session, redirect, url_for
 import os
 
 app = Flask(__name__)
@@ -43,10 +43,9 @@ def chat():
             bot_message = f"ChatBot: {message}"
             session['chat_history'].append({'role': 'bot', 'message': bot_message})
 
-        # Return JSON for AJAX handling
-        return jsonify({'chat_history': session.get('chat_history', [])})
+        # Redirect to the chat page after form submission to avoid form resubmission warning
+        return redirect(url_for('chat'))
 
-    # Display the chat history and documents
     documents = session.get('documents', [])  # Example: replace with actual list
     selected_document = session.get('selected_document', None)
     
@@ -61,8 +60,7 @@ def clear_chat():
 def select_document():
     selected_document = request.form.get('document')
     session['selected_document'] = selected_document
-    return jsonify({'selected_document': selected_document})
+    return redirect(url_for('chat'))
 
 if __name__ == '__main__':
     app.run(debug=True)
-
