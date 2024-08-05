@@ -150,10 +150,6 @@
       .sidebar.collapsed .sidebar a {
           text-align: center;
       }
-      .dropdown-menu {
-          max-height: 200px;
-          overflow-y: auto;
-      }
   </style>
 </head>
 <body>
@@ -190,20 +186,6 @@
     </div>
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
-    <div>
-      <label for="document-select">Select Document:</label>
-      <select id="document-select" class="form-control">
-        <option value="">Select a document</option>
-        {% for document in documents %}
-        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
-        {% endfor %}
-      </select>
-      <div id="selected-document" class="mt-2">
-        {% if selected_document %}
-        <strong>Selected Document:</strong> {{ selected_document }}
-        {% endif %}
-      </div>
-    </div>
     <div class="chat-box">
       <div id="chat-history">
         {% for message in chat_history %}
@@ -247,17 +229,12 @@
               '<div class="message ' + msg.role + '"><div class="message-bubble">' + msg.message + '</div></div>'
             );
           });
-          $('#message').val(''); // Clear input field
-          $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight); // Scroll to bottom
+          // Clear the input field
+          $('#message').val('');
+          // Scroll to bottom
+          var chatBox = document.querySelector('.chat-box');
+          chatBox.scrollTop = chatBox.scrollHeight;
         }
-      });
-    });
-
-    // Handle document selection
-    $('#document-select').on('change', function () {
-      var selectedDocument = $(this).val();
-      $.post('{{ url_for('select_document') }}', { document: selectedDocument }, function () {
-        $('#selected-document').html('<strong>Selected Document:</strong> ' + selectedDocument);
       });
     });
   });
