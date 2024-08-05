@@ -1,9 +1,17 @@
 import json
+import boto3
 
 class TextProcessor:
-    def __init__(self, json_data):
-        self.json_data = json_data
+    def __init__(self, bucket_name, s3_client, input_file):
+        self.json_data = self.load_json_from_s3(bucket_name, input_file, s3_client)
         self.chunks = []
+        self.bucket_name = bucket_name
+        self.s3_client = s3_client
+
+    def load_json_from_s3(self, bucket_name, input_file, s3_client):
+        response = s3_client.get_object(Bucket=bucket_name, Key=input_file)
+        json_data = json.loads(response['Body'].read().decode('utf-8'))
+        return json_data
 
     def extract_text_from_json(self):
         combined_text = []
@@ -45,6 +53,6 @@ class TextProcessor:
         max_tokens_per_chunk = min(8192, total_tokens // max_chunks)  # Adjust chunk size based on total tokens
         self.chunk_text(combined_text, max_tokens_per_chunk)
 
-    def save_chunks_to_json(self, output_file):
-        with open(output_file, 'w') as f:
-            json.dump(self.chunks, f, indent=2)
+    def save_chunks_to_s3(self, output_file):
+        chunks_data = json.dumps(self.chunks, indent=2)
+        self.s3_client.put_object(Bucket=self.bucket_name, Key=output_file, Body=chunks_data)
