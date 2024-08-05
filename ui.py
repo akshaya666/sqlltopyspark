@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 import os
 
 app = Flask(__name__)
@@ -16,7 +16,7 @@ def home():
 def upload_files():
     if request.method == 'POST':
         if 'files[]' not in request.files:
-            return redirect(url_for('upload_files'))
+            return redirect(url_for('home'))
 
         files = request.files.getlist('files[]')
         uploaded_files = []
@@ -26,46 +26,42 @@ def upload_files():
                 file.save(file_path)
                 uploaded_files.append(file.filename)
 
-        session['uploaded_files'] = uploaded_files
-        return redirect(url_for('upload_files'))
-    else:
-        uploaded_files = session.get('uploaded_files', [])
         return render_template('index.html', section='upload', uploaded_files=uploaded_files)
+    return render_template('index.html', section='upload')
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
     if 'chat_history' not in session:
         session['chat_history'] = []
-    if 'documents' not in session:
-        session['documents'] = ['Document 1', 'Document 2', 'Document 3']  # Example documents
-    if 'selected_documents' not in session:
-        session['selected_documents'] = []
 
     if request.method == 'POST':
-        if 'message' in request.form:
-            message = request.form.get('message', '').strip()
-            if message:
-                session['chat_history'].append({'role': 'user', 'message': message})
+        message = request.form.get('message', '').strip()
+        if message:
+            session['chat_history'].append({'role': 'user', 'message': message})
 
-                # Simulate a bot response
-                bot_message = f"ChatBot: {message}"
-                session['chat_history'].append({'role': 'bot', 'message': bot_message})
-        
-        if 'selected_documents' in request.form:
-            selected_docs = request.form.getlist('selected_documents')
-            session['selected_documents'] = selected_docs
+            # Simulate a bot response
+            bot_message = f"ChatBot: {message}"
+            session['chat_history'].append({'role': 'bot', 'message': bot_message})
 
-        return redirect(url_for('chat'))
+        # Return JSON for AJAX handling
+        return jsonify({'chat_history': session.get('chat_history', [])})
 
-    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), 
-                           documents=session.get('documents', []), 
-                           selected_documents=session.get('selected_documents', []))
+    # Display the chat history and documents
+    documents = session.get('documents', [])  # Example: replace with actual list
+    selected_document = session.get('selected_document', None)
+    
+    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), documents=documents, selected_document=selected_document)
 
 @app.route('/clear_chat')
 def clear_chat():
     session.pop('chat_history', None)
-    session.pop('selected_documents', None)
     return redirect(url_for('chat'))
+
+@app.route('/select_document', methods=['POST'])
+def select_document():
+    selected_document = request.form.get('document')
+    session['selected_document'] = selected_document
+    return jsonify({'selected_document': selected_document})
 
 if __name__ == '__main__':
     app.run(debug=True)
