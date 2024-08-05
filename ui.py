@@ -8,6 +8,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 app.config['SESSION_COOKIE_SECURE'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=5)
+
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
@@ -16,7 +17,8 @@ DOCUMENTS = ['Document 1', 'Document 2', 'Document 3']
 
 @app.route('/')
 def home():
-    session['chat_history'] = []
+    if 'chat_history' not in session:
+        session['chat_history'] = []
     return render_template('index.html', section='home', documents=DOCUMENTS)
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -39,27 +41,21 @@ def upload_files():
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
     if request.method == 'POST':
-        message = request.form.get('message', '').strip()
-        if message:
-            session['chat_history'].append({'role': 'user', 'message': message})
+        if 'message' in request.form:
+            message = request.form.get('message', '').strip()
+            if message:
+                session['chat_history'].append({'role': 'user', 'message': message})
 
-            # Simulate a bot response
-            bot_message = f"ChatBot: {message}"
-            session['chat_history'].append({'role': 'bot', 'message': bot_message})
+                # Simulate a bot response
+                bot_message = f"ChatBot: {message}"
+                session['chat_history'].append({'role': 'bot', 'message': bot_message})
 
-    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), selected_document=session.get('selected_document'))
+    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []))
 
 @app.route('/clear_chat')
 def clear_chat():
     session['chat_history'] = []
     return redirect(url_for('chat'))
 
-@app.route('/update_document', methods=['POST'])
-def update_document():
-    selected_document = request.form.get('selected_document')
-    session['selected_document'] = selected_document
-    return redirect(url_for('chat'))
-
 if __name__ == '__main__':
     app.run(debug=False)
-
