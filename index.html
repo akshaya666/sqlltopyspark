@@ -6,7 +6,7 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Add jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
       body {
           margin: 0;
@@ -82,8 +82,8 @@
           padding: 10px;
           margin-bottom: 10px;
           position: relative;
-          font-size: 18px;
-          max-height: 70vh;
+          font-size: 18px; /* Increased font size */
+          max-height: 70vh; /* Adjusted height */
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -163,8 +163,8 @@
           text-align: center;
           transition: background-color 0.3s;
           position: relative;
-          width: 100%;
-          max-width: 600px;
+          width: 100%; /* Increased width */
+          max-width: 600px; /* Max width */
       }
       .upload-box:hover {
           background-color: #e9ecef;
@@ -191,102 +191,68 @@
       .dropdown-container {
           margin-bottom: 10px;
       }
-      .input-area input, .input-area button {
-          width: 100%; /* Fix for the input area width */
-      }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="sidebar">
     <div class="sidebar-toggle" onclick="toggleSidebar()">☰</div>
-    <h3 class="text-center">Menu</h3>
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('upload_files') }}">Upload Files</a>
-    <a href="{{ url_for('chat') }}">Chat</a>
+    <a href="#">Home</a>
+    <a href="#">Upload</a>
+    <a href="#">Chat</a>
   </div>
   <div class="content">
-    {% if section == 'upload' %}
-    <h1>Upload Files</h1>
-    <div class="upload-container">
-      <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
-        <div class="upload-box">
-          <label for="file-input">Click to select files</label>
-          <input type="file" id="file-input" name="files[]" multiple>
-          <p>or drag and drop files here</p>
-          <div id="file-name" class="file-name">No file chosen</div>
+    <div class="dropdown-container">
+        <label for="document-select">Select Document:</label>
+        <select id="document-select" class="form-control">
+            {% for doc in documents %}
+                <option value="{{ doc }}" {% if doc == selected_document %}selected{% endif %}>{{ doc }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="chat-box">
+      {% for entry in chat_history %}
+        <div class="message {% if entry.role == 'user' %}user{% else %}bot{% endif %}">
+            <div class="message-bubble">{{ entry.message }}</div>
         </div>
-        <button class="btn btn-primary" type="submit">Upload</button>
+      {% endfor %}
+    </div>
+    <div class="input-area">
+      <form action="{{ url_for('chat') }}" method="POST" id="chat-form">
+        <input type="text" name="message" placeholder="Type a message...">
+        <button type="submit">Send</button>
       </form>
     </div>
-    {% if uploaded_files %}
-    <h3>Uploaded Files:</h3>
-    <ul>
-      {% for file in uploaded_files %}
-      <li>{{ file }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% elif section == 'chat' %}
-    <h1>Chat Prompt</h1>
-    <div class="dropdown-container">
-      <label for="document-select">Select Document:</label>
-      <select id="document-select" name="selected_document">
-        <option value="">Select a document</option>
-        {% for document in documents %}
-        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="chat-box" id="chat-box">
-      {% for message in chat_history %}
-      <div class="message {{ message.role }}">
-        <div class="message-bubble">{{ message.message }}</div>
-      </div>
-      {% endfor %}
-    </div>
-    <form action="{{ url_for('chat') }}" method="post" class="input-area">
-      <input type="text" class="form-control" name="message" placeholder="Type your message" required>
-      <button type="submit" class="btn btn-primary">Send</button>
-    </form>
-    <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
-    {% else %}
-    <h1>Welcome</h1>
-    <p>Select an option from the menu.</p>
-    {% endif %}
+    <button class="btn btn-secondary" onclick="clearChat()">Clear Chat</button>
   </div>
 </div>
 
 <script>
-  function toggleSidebar() {
-    document.querySelector('.sidebar').classList.toggle('collapsed');
-    document.querySelector('.content').classList.toggle('collapsed');
-  }
+function clearChat() {
+    if (confirm('Are you sure you want to clear the chat?')) {
+        window.location.href = "{{ url_for('clear_chat') }}";
+    }
+}
 
-  document.getElementById('file-input').addEventListener('change', function() {
-    const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
-    document.getElementById('file-name').textContent = fileName;
-  });
-
-  document.getElementById('document-select').addEventListener('change', function() {
+document.getElementById('document-select').addEventListener('change', function() {
     const selectedDocument = this.value;
-    fetch('/update_document', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-        'selected_document': selectedDocument
-      })
+    fetch('{{ url_for('update_document') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            'selected_document': selectedDocument
+        })
     });
-  });
+});
 
-  function autoScrollToBottom() {
-    const chatBox = document.getElementById('chat-box');
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  window.onload = autoScrollToBottom;
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const content = document.querySelector('.content');
+    sidebar.classList.toggle('collapsed');
+    content.classList.toggle('expanded');
+}
 </script>
 </body>
 </html>
