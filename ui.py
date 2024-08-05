@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+from flask import Flask, render_template, request, session, redirect, url_for
 import os
 
 app = Flask(__name__)
@@ -11,9 +11,15 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 # Dummy list of documents
 DOCUMENTS = ['Document 1', 'Document 2', 'Document 3']
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template('index.html', section='home', documents=DOCUMENTS)
+    if request.method == 'POST':
+        selected_document = request.form.get('selected_document')
+        if selected_document:
+            session['selected_document'] = selected_document
+        return redirect(url_for('home'))
+    
+    return render_template('index.html', section='home', documents=DOCUMENTS, selected_document=session.get('selected_document'))
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_files():
@@ -29,8 +35,8 @@ def upload_files():
                 file.save(file_path)
                 uploaded_files.append(file.filename)
 
-        return render_template('index.html', section='upload', uploaded_files=uploaded_files, documents=DOCUMENTS)
-    return render_template('index.html', section='upload', documents=DOCUMENTS)
+        return render_template('index.html', section='upload', uploaded_files=uploaded_files, documents=DOCUMENTS, selected_document=session.get('selected_document'))
+    return render_template('index.html', section='upload', documents=DOCUMENTS, selected_document=session.get('selected_document'))
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
@@ -55,12 +61,6 @@ def chat():
 def clear_chat():
     session.pop('chat_history', None)
     return redirect(url_for('chat'))
-
-@app.route('/update_document', methods=['POST'])
-def update_document():
-    selected_document = request.form.get('selected_document')
-    session['selected_document'] = selected_document
-    return jsonify(success=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
