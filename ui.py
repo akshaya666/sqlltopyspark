@@ -26,6 +26,7 @@ def upload_files():
                 file.save(file_path)
                 uploaded_files.append(file.filename)
 
+        session['uploaded_files'] = uploaded_files
         return render_template('index.html', section='upload', uploaded_files=uploaded_files)
     return render_template('index.html', section='upload')
 
@@ -36,14 +37,17 @@ def chat():
 
     if request.method == 'POST':
         message = request.form.get('message', '').strip()
+        selected_document = request.form.get('selected_document')
+        
         if message:
             session['chat_history'].append({'role': 'user', 'message': message})
 
             # Simulate a bot response
-            bot_message = f"ChatBot: {message}"
+            bot_message = f"ChatBot: You said '{message}' and selected '{selected_document}'"
             session['chat_history'].append({'role': 'bot', 'message': bot_message})
 
-    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []))
+    uploaded_files = session.get('uploaded_files', [])
+    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), uploaded_files=uploaded_files)
 
 @app.route('/clear_chat')
 def clear_chat():
