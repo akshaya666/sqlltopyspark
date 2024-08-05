@@ -82,6 +82,7 @@
           margin-bottom: 10px;
           position: relative;
           font-size: 18px; /* Increased font size */
+          height: 60vh; /* Adjusted height for smaller chat window */
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -190,6 +191,9 @@
       .document-select {
           margin-bottom: 10px;
       }
+      .document-select select {
+          width: 200px; /* Increased width */
+      }
       .selected-documents {
           display: flex;
           flex-wrap: wrap;
@@ -241,7 +245,7 @@
     <div class="document-select">
       <form action="{{ url_for('chat') }}" method="post" class="form-inline">
         <select name="document" class="form-control mr-2">
-          {% for file in uploaded_files %}
+          {% for file in dummy_documents %}
           <option value="{{ file }}">{{ file }}</option>
           {% endfor %}
         </select>
@@ -253,7 +257,7 @@
       <div class="document-pill">{{ doc }}</div>
       {% endfor %}
     </div>
-    <div class="chat-box">
+    <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
         <div class="message-bubble">{{ message.message }}</div>
