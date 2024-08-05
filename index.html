@@ -231,6 +231,12 @@
     </div>
     <form action="{{ url_for('chat') }}" method="post" class="input-area">
       <input type="text" class="form-control" name="message" placeholder="Type your message" required>
+      <select name="selected_document" class="form-control" style="margin-right: 10px;">
+        <option value="" disabled selected>Select document</option>
+        {% for file in uploaded_files %}
+        <option value="{{ file }}">{{ file }}</option>
+        {% endfor %}
+      </select>
       <button type="submit" class="btn btn-primary">Send</button>
     </form>
     <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
