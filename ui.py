@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 import os
 
 app = Flask(__name__)
@@ -7,9 +7,6 @@ app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
-
-# Dummy documents
-dummy_docs = ["Document1.txt", "Document2.pdf", "Document3.docx"]
 
 @app.route('/')
 def home():
@@ -29,40 +26,31 @@ def upload_files():
                 file.save(file_path)
                 uploaded_files.append(file.filename)
 
-        session['uploaded_files'] = uploaded_files
         return render_template('index.html', section='upload', uploaded_files=uploaded_files)
     return render_template('index.html', section='upload')
 
-@app.route('/chat', methods=['GET', 'POST'])
+@app.route('/chat', methods=['POST'])
 def chat():
-    if 'chat_history' not in session:
-        session['chat_history'] = []
+    message = request.form.get('message', '').strip()
+    selected_document = request.form.get('selected_document', '')
 
-    if 'selected_document' not in session:
-        session['selected_document'] = None
+    # Here you can process the message and selected document
+    # For now, we'll just simulate a response
+    response = {
+        'chat_history': [
+            {'role': 'user', 'message': message},
+            {'role': 'bot', 'message': f"ChatBot response to: {message} with document {selected_document}"}
+        ],
+        'selected_document': selected_document
+    }
 
-    if request.method == 'POST':
-        # Handle document selection
-        selected_document = request.form.get('selected_document')
-        if selected_document:
-            session['selected_document'] = selected_document
-        
-        # Handle chat message
-        message = request.form.get('message', '').strip()
-        if message:
-            session['chat_history'].append({'role': 'user', 'message': message})
-
-            # Simulate a bot response
-            bot_message = f"ChatBot: You said '{message}' and selected '{session['selected_document']}'"
-            session['chat_history'].append({'role': 'bot', 'message': bot_message})
-
-    uploaded_files = session.get('uploaded_files', []) + dummy_docs
-    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), uploaded_files=uploaded_files, selected_document=session['selected_document'])
+    return jsonify(response)
 
 @app.route('/clear_chat')
 def clear_chat():
-    session.pop('chat_history', None)
+    # Clear chat history and redirect
     return redirect(url_for('chat'))
 
 if __name__ == '__main__':
     app.run(debug=True)
+
