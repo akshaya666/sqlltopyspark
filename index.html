@@ -245,12 +245,8 @@
         {% endfor %}
       </select>
     </div>
-    <div id="selected-doc" class="alert alert-info">
-      {% if selected_document %}
-        Selected Document: {{ selected_document }}
-      {% else %}
-        No document selected
-      {% endif %}
+    <div id="selected-doc" class="alert alert-info" style="display: {% if selected_document %}block{% else %}none{% endif %};">
+      Selected Document: {{ selected_document }}
     </div>
     <div class="chat-box">
       {% for message in chat_history %}
@@ -284,7 +280,8 @@
 
   document.getElementById('document-select').addEventListener('change', function() {
     var selectedDoc = this.options[this.selectedIndex].text;
-    document.getElementById('selected-doc').innerHTML = '<div class="alert alert-info">Selected Document: ' + selectedDoc + '</div>';
+    document.getElementById('selected-doc').innerHTML = 'Selected Document: ' + selectedDoc;
+    document.getElementById('selected-doc').style.display = 'block';
 
     // Send the selection to the server
     fetch('{{ url_for("select_document") }}', {
@@ -316,14 +313,6 @@
         });
         chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
       });
-  });
-
-  // Optionally, handle form resubmission when reloading
-  window.addEventListener('beforeunload', function(event) {
-    if (window.location.href.includes('chat') && !confirm('Changes you made may not be saved. Are you sure you want to leave?')) {
-      event.preventDefault();
-      event.returnValue = '';
-    }
   });
 </script>
 </body>
