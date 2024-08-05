@@ -82,7 +82,7 @@
           margin-bottom: 10px;
           position: relative;
           font-size: 18px; /* Increased font size */
-          max-height: 70vh; /* Adjusted height */
+          max-height: 500px; /* Limit height to make the chat window smaller */
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -147,6 +147,9 @@
       .btn-secondary {
           margin-top: 10px;
       }
+      .sidebar.collapsed .sidebar a {
+          text-align: center;
+      }
       .upload-container {
           display: flex;
           flex-direction: column;
@@ -162,8 +165,7 @@
           text-align: center;
           transition: background-color 0.3s;
           position: relative;
-          width: 100%; /* Increased width */
-          max-width: 600px; /* Max width */
+          width: 400px; /* Increased width */
       }
       .upload-box:hover {
           background-color: #e9ecef;
@@ -186,6 +188,34 @@
           margin-top: 10px;
           font-size: 16px;
           color: #333;
+      }
+      .pill {
+          display: inline-flex;
+          align-items: center;
+          background-color: #007bff;
+          color: #fff;
+          padding: 5px 10px;
+          border-radius: 20px;
+          margin: 5px;
+          font-size: 14px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .pill button {
+          background: none;
+          border: none;
+          color: #fff;
+          font-size: 16px;
+          margin-left: 5px;
+          cursor: pointer;
+      }
+      .pill button:hover {
+          color: #ff0000;
+      }
+      .select-docs-container {
+          margin-bottom: 10px;
+      }
+      #document-select {
+          width: 300px; /* Adjust width as needed */
       }
   </style>
 </head>
@@ -222,7 +252,23 @@
     {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
-    <div class="chat-box" id="chat-box">
+    <div class="select-docs-container">
+      <label for="document-select">Select Documents:</label>
+      <select id="document-select" multiple>
+        {% for doc in documents %}
+        <option value="{{ doc }}">{{ doc }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div id="selected-docs">
+      {% for doc in selected_documents %}
+      <div class="pill">
+        {{ doc }}
+        <button type="button" onclick="removePill('{{ doc }}')">&times;</button>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="chat-box">
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
         <div class="message-bubble">{{ message.message }}</div>
@@ -252,12 +298,39 @@
     document.getElementById('file-name').textContent = fileName;
   });
 
-  function autoScrollToBottom() {
-    const chatBox = document.getElementById('chat-box');
-    chatBox.scrollTop = chatBox.scrollHeight;
+  function updateSelectedDocs() {
+    const selectBox = document.getElementById('document-select');
+    const selectedDocsContainer = document.getElementById('selected-docs');
+    selectedDocsContainer.innerHTML = '';
+
+    Array.from(selectBox.selectedOptions).forEach(option => {
+      const pill = document.createElement('div');
+      pill.className = 'pill';
+      pill.textContent = option.textContent;
+
+      const removeButton = document.createElement('button');
+      removeButton.textContent = '×';
+      removeButton.onclick = () => removePill(option.value);
+      pill.appendChild(removeButton);
+
+      selectedDocsContainer.appendChild(pill);
+    });
   }
 
-  window.onload = autoScrollToBottom;
+  function removePill(docName) {
+    const selectBox = document.getElementById('document-select');
+    const selectedOptions = Array.from(selectBox.selectedOptions);
+
+    selectedOptions.forEach(option => {
+      if (option.value === docName) {
+        option.selected = false;
+      }
+    });
+
+    updateSelectedDocs();
+  }
+
+  document.getElementById('document-select').addEventListener('change', updateSelectedDocs);
 </script>
 </body>
 </html>
