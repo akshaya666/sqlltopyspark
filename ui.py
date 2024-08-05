@@ -16,7 +16,9 @@ DOCUMENTS = ['Document 1', 'Document 2', 'Document 3']
 
 @app.route('/')
 def home():
-    session['chat_history'] = []
+    # Initialize chat history and selected document
+    if 'chat_history' not in session:
+        session['chat_history'] = []
     if 'selected_document' not in session:
         session['selected_document'] = DOCUMENTS[0]  # Set a default document if not already set
     return render_template('index.html', section='home', documents=DOCUMENTS)
@@ -40,6 +42,7 @@ def upload_files():
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
+    # Initialize chat history and selected document
     if 'chat_history' not in session:
         session['chat_history'] = []
     if 'selected_document' not in session:
