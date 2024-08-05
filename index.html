@@ -256,27 +256,32 @@
 </div>
 
 <script>
-  function toggleSidebar() {
-    document.querySelector('.sidebar').classList.toggle('collapsed');
-    document.querySelector('.content').classList.toggle('collapsed');
-  }
+  document.addEventListener('DOMContentLoaded', function() {
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('collapsed');
+      document.querySelector('.content').classList.toggle('collapsed');
+    }
 
-  document.getElementById('file-input').addEventListener('change', function() {
-    const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
-    document.getElementById('file-name').textContent = fileName;
-  });
+    document.querySelector('.sidebar-toggle').addEventListener('click', toggleSidebar);
 
-  function autoScrollToBottom() {
-    const chatBox = document.getElementById('chat-box');
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
+    document.getElementById('file-input').addEventListener('change', function() {
+      const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
+      document.getElementById('file-name').textContent = fileName;
+    });
 
-  window.onload = autoScrollToBottom;
-  window.onresize = autoScrollToBottom;
+    function autoScrollToBottom() {
+      const chatBox = document.getElementById('chat-box');
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-  document.getElementById('document-select').addEventListener('change', function() {
-    document.getElementById('document-form').submit();
+    window.onload = autoScrollToBottom;
+    window.onresize = autoScrollToBottom;
+
+    document.getElementById('document-select').addEventListener('change', function() {
+      document.getElementById('document-form').submit();
+    });
   });
 </script>
 </body>
 </html>
+
