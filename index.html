@@ -6,7 +6,7 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Add jQuery -->
   <style>
       body {
           margin: 0;
@@ -82,8 +82,8 @@
           padding: 10px;
           margin-bottom: 10px;
           position: relative;
-          font-size: 18px;
-          max-height: 70vh;
+          font-size: 18px; /* Increased font size */
+          max-height: 70vh; /* Adjusted height */
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -163,8 +163,8 @@
           text-align: center;
           transition: background-color 0.3s;
           position: relative;
-          width: 100%;
-          max-width: 600px;
+          width: 100%; /* Increased width */
+          max-width: 600px; /* Max width */
       }
       .upload-box:hover {
           background-color: #e9ecef;
@@ -187,6 +187,9 @@
           margin-top: 10px;
           font-size: 16px;
           color: #333;
+      }
+      .dropdown-container {
+          margin-bottom: 10px;
       }
   </style>
 </head>
@@ -223,6 +226,15 @@
     {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
+    <div class="dropdown-container">
+      <label for="document-select">Select Document:</label>
+      <select id="document-select" name="selected_document">
+        <option value="">Select a document</option>
+        {% for document in documents %}
+        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
+        {% endfor %}
+      </select>
+    </div>
     <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
@@ -248,11 +260,22 @@
     document.querySelector('.content').classList.toggle('collapsed');
   }
 
-  document.querySelector('.sidebar-toggle').addEventListener('click', toggleSidebar);
-
   document.getElementById('file-input').addEventListener('change', function() {
     const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
     document.getElementById('file-name').textContent = fileName;
+  });
+
+  document.getElementById('document-select').addEventListener('change', function() {
+    const selectedDocument = this.value;
+    fetch('/update_document', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        'selected_document': selectedDocument
+      })
+    });
   });
 
   function autoScrollToBottom() {
@@ -261,7 +284,6 @@
   }
 
   window.onload = autoScrollToBottom;
-  window.onresize = autoScrollToBottom;
 </script>
 </body>
 </html>
