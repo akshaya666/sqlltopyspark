@@ -188,6 +188,9 @@
           font-size: 16px;
           color: #333;
       }
+      .dropdown-container {
+          margin-bottom: 10px;
+      }
   </style>
 </head>
 <body>
@@ -223,6 +226,15 @@
     {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
+    <div class="dropdown-container">
+      <label for="document-select">Select Document:</label>
+      <select id="document-select" name="selected_document">
+        <option value="">Select a document</option>
+        {% for document in documents %}
+        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
+        {% endfor %}
+      </select>
+    </div>
     <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
@@ -251,6 +263,19 @@
   document.getElementById('file-input').addEventListener('change', function() {
     const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
     document.getElementById('file-name').textContent = fileName;
+  });
+
+  document.getElementById('document-select').addEventListener('change', function() {
+    const selectedDocument = this.value;
+    fetch('/update_document', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        'selected_document': selectedDocument
+      })
+    });
   });
 
   function autoScrollToBottom() {
