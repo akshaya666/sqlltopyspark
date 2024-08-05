@@ -38,19 +38,24 @@ def chat():
     if 'chat_history' not in session:
         session['chat_history'] = []
 
+    if 'selected_document' not in session:
+        session['selected_document'] = None
+
     if request.method == 'POST':
-        message = request.form.get('message', '').strip()
         selected_document = request.form.get('selected_document')
+        if selected_document:
+            session['selected_document'] = selected_document
         
+        message = request.form.get('message', '').strip()
         if message:
             session['chat_history'].append({'role': 'user', 'message': message})
 
             # Simulate a bot response
-            bot_message = f"ChatBot: You said '{message}' and selected '{selected_document}'"
+            bot_message = f"ChatBot: You said '{message}' and selected '{session['selected_document']}'"
             session['chat_history'].append({'role': 'bot', 'message': bot_message})
 
     uploaded_files = session.get('uploaded_files', []) + dummy_docs
-    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), uploaded_files=uploaded_files)
+    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), uploaded_files=uploaded_files, selected_document=session['selected_document'])
 
 @app.route('/clear_chat')
 def clear_chat():
@@ -59,4 +64,3 @@ def clear_chat():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
