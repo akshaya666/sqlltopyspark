@@ -215,13 +215,6 @@
         <button class="btn btn-primary" type="submit">Upload</button>
       </form>
     </div>
-    {% if uploaded_files %}
-    <h3>Uploaded Files:</h3>
-    <ul>
-      {% for file in uploaded_files %}
-      <li>{{ file }}</li>
-      {% endfor %}
-    </ul>
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
     <div class="dropdown-container">
