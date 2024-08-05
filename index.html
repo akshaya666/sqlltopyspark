@@ -188,9 +188,6 @@
           font-size: 16px;
           color: #333;
       }
-      .dropdown-container {
-          margin-bottom: 10px;
-      }
   </style>
 </head>
 <body>
@@ -226,17 +223,6 @@
     {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
-    <form id="document-form" action="{{ url_for('update_document') }}" method="post">
-      <div class="dropdown-container">
-        <label for="document-select">Select Document:</label>
-        <select id="document-select" name="selected_document" onchange="updateDocument()">
-          <option value="">Select a document</option>
-          {% for document in documents %}
-          <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
-          {% endfor %}
-        </select>
-      </div>
-    </form>
     <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
@@ -272,10 +258,6 @@
   function autoScrollToBottom() {
     const chatBox = document.getElementById('chat-box');
     chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  function updateDocument() {
-    document.getElementById('document-form').submit();
   }
 
   window.onload = autoScrollToBottom;
