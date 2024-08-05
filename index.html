@@ -6,6 +6,7 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Add jQuery -->
   <style>
       body {
           margin: 0;
@@ -226,15 +227,13 @@
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
     <div class="dropdown-container">
-      <form action="{{ url_for('chat') }}" method="post">
-        <label for="document-select">Select Document:</label>
-        <select id="document-select" name="selected_document" onchange="this.form.submit()">
-          <option value="">Select a document</option>
-          {% for document in documents %}
-          <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
-          {% endfor %}
-        </select>
-      </form>
+      <label for="document-select">Select Document:</label>
+      <select id="document-select" name="selected_document">
+        <option value="">Select a document</option>
+        {% for document in documents %}
+        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
+        {% endfor %}
+      </select>
     </div>
     <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
@@ -264,6 +263,19 @@
   document.getElementById('file-input').addEventListener('change', function() {
     const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
     document.getElementById('file-name').textContent = fileName;
+  });
+
+  document.getElementById('document-select').addEventListener('change', function() {
+    const selectedDocument = this.value;
+    fetch('/update_document', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        'selected_document': selectedDocument
+      })
+    });
   });
 
   function autoScrollToBottom() {
