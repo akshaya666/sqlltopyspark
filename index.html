@@ -188,6 +188,9 @@
           font-size: 16px;
           color: #333;
       }
+      .dropdown-container {
+          margin-bottom: 10px;
+      }
   </style>
 </head>
 <body>
@@ -224,13 +227,14 @@
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
     <div class="dropdown-container">
-      <label for="document-select">Select Document:</label>
-      <select id="document-select" name="selected_document" onchange="updateDocument()">
-        <option value="">Select a document</option>
-        {% for document in documents %}
-        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
-        {% endfor %}
-      </select>
+      <form id="document-form" action="{{ url_for('update_document') }}" method="post">
+        <select id="document-select" name="selected_document" class="custom-select">
+          <option value="">Select Document</option>
+          {% for document in documents %}
+          <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
+          {% endfor %}
+        </select>
+      </form>
     </div>
     <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
@@ -262,25 +266,17 @@
     document.getElementById('file-name').textContent = fileName;
   });
 
-  function updateDocument() {
-    const selectedDocument = document.getElementById('document-select').value;
-    fetch('/update_document', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-        'selected_document': selectedDocument
-      })
-    });
-  }
-
   function autoScrollToBottom() {
     const chatBox = document.getElementById('chat-box');
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
   window.onload = autoScrollToBottom;
+  window.onresize = autoScrollToBottom;
+
+  document.getElementById('document-select').addEventListener('change', function() {
+    document.getElementById('document-form').submit();
+  });
 </script>
 </body>
 </html>
