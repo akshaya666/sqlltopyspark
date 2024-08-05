@@ -249,19 +249,18 @@
           Select Documents
         </button>
         <div class="dropdown-menu" aria-labelledby="documentDropdown">
-          <form action="{{ url_for('select_documents') }}" method="post">
+          <form id="documentForm">
             {% for file in dummy_documents %}
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="selected_documents[]" value="{{ file }}" id="doc{{ loop.index }}">
+              <input class="form-check-input" type="checkbox" name="selected_documents[]" value="{{ file }}" id="doc{{ loop.index }}" onchange="updateSelectedDocuments(this)">
               <label class="form-check-label" for="doc{{ loop.index }}">{{ file }}</label>
             </div>
             {% endfor %}
-            <button class="btn btn-primary mt-2" type="submit">Apply</button>
           </form>
         </div>
       </div>
     </div>
-    <div class="selected-documents">
+    <div class="selected-documents" id="selectedDocuments">
       {% for doc in selected_documents %}
       <div class="document-pill">{{ doc }}</div>
       {% endfor %}
@@ -295,6 +294,22 @@
     const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
     document.getElementById('file-name').textContent = fileName;
   });
+
+  function updateSelectedDocuments(checkbox) {
+    const selectedDocumentsContainer = document.getElementById('selectedDocuments');
+    if (checkbox.checked) {
+      const pill = document.createElement('div');
+      pill.className = 'document-pill';
+      pill.textContent = checkbox.value;
+      pill.id = 'pill-' + checkbox.value;
+      selectedDocumentsContainer.appendChild(pill);
+    } else {
+      const pill = document.getElementById('pill-' + checkbox.value);
+      if (pill) {
+        selectedDocumentsContainer.removeChild(pill);
+      }
+    }
+  }
 
   function autoScrollToBottom() {
     const chatBox = document.getElementById('chat-box');
