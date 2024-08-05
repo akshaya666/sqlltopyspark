@@ -34,13 +34,8 @@ def chat():
     if 'chat_history' not in session:
         session['chat_history'] = []
 
-    if 'selected_documents' not in session:
-        session['selected_documents'] = []
-
     if request.method == 'POST':
         message = request.form.get('message', '').strip()
-        selected_documents = request.form.getlist('documents')
-
         if message:
             session['chat_history'].append({'role': 'user', 'message': message})
 
@@ -48,15 +43,11 @@ def chat():
             bot_message = f"ChatBot: {message}"
             session['chat_history'].append({'role': 'bot', 'message': bot_message})
 
-        session['selected_documents'] = selected_documents
-
-    documents = ['Document 1', 'Document 2', 'Document 3']  # Example documents
-    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), selected_documents=session.get('selected_documents', []), documents=documents)
+    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []))
 
 @app.route('/clear_chat')
 def clear_chat():
     session.pop('chat_history', None)
-    session.pop('selected_documents', None)
     return redirect(url_for('chat'))
 
 if __name__ == '__main__':
