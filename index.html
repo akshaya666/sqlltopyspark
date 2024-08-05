@@ -256,11 +256,6 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    function toggleSidebar() {
-      document.querySelector('.sidebar').classList.toggle('collapsed');
-      document.querySelector('.content').classList.toggle('collapsed');
-    }
-
     const fileInput = document.getElementById('file-input');
     if (fileInput) {
       fileInput.addEventListener('change', function() {
