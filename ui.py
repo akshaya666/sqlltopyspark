@@ -8,6 +8,9 @@ app.config['UPLOAD_FOLDER'] = 'uploads/'
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
+# Dummy documents
+dummy_docs = ["Document1.txt", "Document2.pdf", "Document3.docx"]
+
 @app.route('/')
 def home():
     return render_template('index.html', section='home')
@@ -46,7 +49,7 @@ def chat():
             bot_message = f"ChatBot: You said '{message}' and selected '{selected_document}'"
             session['chat_history'].append({'role': 'bot', 'message': bot_message})
 
-    uploaded_files = session.get('uploaded_files', [])
+    uploaded_files = session.get('uploaded_files', []) + dummy_docs
     return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), uploaded_files=uploaded_files)
 
 @app.route('/clear_chat')
@@ -56,3 +59,4 @@ def clear_chat():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
