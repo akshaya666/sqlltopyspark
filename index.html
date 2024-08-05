@@ -197,6 +197,7 @@
 <div class="container">
   <div class="sidebar">
     <div class="sidebar-toggle" onclick="toggleSidebar()">☰</div>
+    <h3 class="text-center">Menu</h3>
     <a href="{{ url_for('home') }}">Home</a>
     <a href="{{ url_for('upload_files') }}">Upload Files</a>
     <a href="{{ url_for('chat') }}">Chat</a>
@@ -215,30 +216,37 @@
         <button class="btn btn-primary" type="submit">Upload</button>
       </form>
     </div>
+    {% if uploaded_files %}
+    <h3>Uploaded Files:</h3>
+    <ul>
+      {% for file in uploaded_files %}
+      <li>{{ file }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
     <div class="dropdown-container">
-        <label for="document-select">Select Document:</label>
-        <select id="document-select" class="form-control">
-            {% for doc in documents %}
-                <option value="{{ doc }}" {% if doc == selected_document %}selected{% endif %}>{{ doc }}</option>
-            {% endfor %}
-        </select>
+      <label for="document-select">Select Document:</label>
+      <select id="document-select" name="selected_document">
+        <option value="">Select a document</option>
+        {% for document in documents %}
+        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
+        {% endfor %}
+      </select>
     </div>
     <div class="chat-box" id="chat-box">
-      {% for entry in chat_history %}
-        <div class="message {% if entry.role == 'user' %}user{% else %}bot{% endif %}">
-            <div class="message-bubble">{{ entry.message }}</div>
-        </div>
+      {% for message in chat_history %}
+      <div class="message {{ message.role }}">
+        <div class="message-bubble">{{ message.message }}</div>
+      </div>
       {% endfor %}
     </div>
-    <div class="input-area">
-      <form action="{{ url_for('chat') }}" method="POST" id="chat-form">
-        <input type="text" name="message" placeholder="Type a message..." required>
-        <button type="submit">Send</button>
-      </form>
-    </div>
-    <button class="btn btn-secondary" onclick="clearChat()">Clear Chat</button>
+    <form action="{{ url_for('chat') }}" method="post" class="input-area">
+      <input type="text" class="form-control" name="message" placeholder="Type your message" required>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+    <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
     {% else %}
     <h1>Welcome</h1>
     <p>Select an option from the menu.</p>
@@ -247,31 +255,35 @@
 </div>
 
 <script>
-function clearChat() {
-    if (confirm('Are you sure you want to clear the chat?')) {
-        window.location.href = "{{ url_for('clear_chat') }}";
-    }
-}
+  function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('collapsed');
+    document.querySelector('.content').classList.toggle('collapsed');
+  }
 
-document.getElementById('document-select').addEventListener('change', function() {
+  document.getElementById('file-input').addEventListener('change', function() {
+    const fileName = this.files.length > 0 ? Array.from(this.files).map(file => file.name).join(', ') : 'No file chosen';
+    document.getElementById('file-name').textContent = fileName;
+  });
+
+  document.getElementById('document-select').addEventListener('change', function() {
     const selectedDocument = this.value;
-    fetch('{{ url_for('update_document') }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-            'selected_document': selectedDocument
-        })
+    fetch('/update_document', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        'selected_document': selectedDocument
+      })
     });
-});
+  });
 
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    const content = document.querySelector('.content');
-    sidebar.classList.toggle('collapsed');
-    content.classList.toggle('expanded');
-}
+  function autoScrollToBottom() {
+    const chatBox = document.getElementById('chat-box');
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  window.onload = autoScrollToBottom;
 </script>
 </body>
 </html>
