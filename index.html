@@ -150,56 +150,9 @@
       .sidebar.collapsed .sidebar a {
           text-align: center;
       }
-      .upload-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-      }
-      .upload-box {
-          background-color: #f9f9f9;
-          border: 2px dashed #007bff;
-          border-radius: 10px;
-          padding: 30px;
-          text-align: center;
-          transition: background-color 0.3s;
-          position: relative;
-          min-width: 300px;
-          min-height: 200px;
-      }
-      .upload-box:hover {
-          background-color: #e9ecef;
-      }
-      .upload-box input[type="file"] {
-          display: none;
-      }
-      .upload-box label {
-          display: block;
-          cursor: pointer;
-          color: #007bff;
-          font-size: 16px;
-          margin-bottom: 10px;
-      }
-      .upload-box p {
-          margin: 0;
-          color: #666;
-      }
-      .file-name {
-          margin-top: 10px;
-          font-size: 16px;
-          color: #333;
-      }
       .dropdown-menu {
           max-height: 200px;
           overflow-y: auto;
-      }
-      .dropdown-item.active {
-          background-color: #007bff;
-          color: #fff;
-      }
-      .dropdown-item {
-          cursor: pointer;
       }
   </style>
 </head>
@@ -236,6 +189,21 @@
       </div>
     </div>
     {% elif section == 'chat' %}
+    <h1>Chat Prompt</h1>
+    <div>
+      <label for="document-select">Select Document:</label>
+      <select id="document-select" class="form-control">
+        <option value="">Select a document</option>
+        {% for document in documents %}
+        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
+        {% endfor %}
+      </select>
+      <div id="selected-document" class="mt-2">
+        {% if selected_document %}
+        <strong>Selected Document:</strong> {{ selected_document }}
+        {% endif %}
+      </div>
+    </div>
     <div class="chat-box">
       <div id="chat-history">
         {% for message in chat_history %}
@@ -251,21 +219,7 @@
         <button type="submit" class="btn btn-primary">Send</button>
       </div>
     </form>
-    <div class="mt-3">
-      <label for="document-select">Select Document:</label>
-      <select id="document-select" class="form-control">
-        <option value="">Select a document</option>
-        {% for document in documents %}
-        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
-        {% endfor %}
-      </select>
-      <div id="selected-document" class="mt-2">
-        {% if selected_document %}
-        <strong>Selected Document:</strong> {{ selected_document }}
-        {% endif %}
-      </div>
-    </div>
-    <button class="btn btn-secondary mt-3" onclick="clearChat()">Clear Chat</button>
+    <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary mt-3">Clear Chat</a>
     {% endif %}
   </div>
 </div>
@@ -306,14 +260,6 @@
         $('#selected-document').html('<strong>Selected Document:</strong> ' + selectedDocument);
       });
     });
-
-    // Clear chat history
-    function clearChat() {
-      $.get('{{ url_for('clear_chat') }}', function () {
-        $('#chat-history').empty();
-        $('#selected-document').empty();
-      });
-    }
   });
 </script>
 </body>
