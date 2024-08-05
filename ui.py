@@ -14,7 +14,6 @@ def home():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_files():
     if request.method == 'POST':
-        # Handle file uploads
         files = request.files.getlist('files[]')
         uploaded_files = [file.filename for file in files]
         return render_template('index.html', section='upload', uploaded_files=uploaded_files)
@@ -26,7 +25,6 @@ def chat():
     if request.method == 'POST':
         message = request.form['message']
         chat_history.append({'role': 'user', 'message': message})
-        # For simplicity, echoing the message
         chat_history.append({'role': 'bot', 'message': f"Echo: {message}"})
         selected_documents = request.form.getlist('selected_documents[]')
     return render_template('index.html', section='chat', dummy_documents=dummy_documents, selected_documents=selected_documents, chat_history=chat_history)
