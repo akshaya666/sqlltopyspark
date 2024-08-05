@@ -222,11 +222,11 @@
     {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
-    <form action="{{ url_for('chat') }}" method="post" class="input-area">
+    <form action="{{ url_for('chat') }}" method="post">
       <select name="selected_document" class="form-control" style="margin-right: 10px; margin-bottom: 10px;">
-        <option value="" disabled {{ '' if selected_document else 'selected' }}>Select document</option>
+        <option value="" disabled {% if not selected_document %} selected {% endif %}>Select document</option>
         {% for file in uploaded_files %}
-        <option value="{{ file }}" {{ 'selected' if file == selected_document else '' }}>{{ file }}</option>
+        <option value="{{ file }}" {% if file == selected_document %} selected {% endif %}>{{ file }}</option>
         {% endfor %}
       </select>
     </form>
