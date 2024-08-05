@@ -222,6 +222,14 @@
     {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
+    <form action="{{ url_for('chat') }}" method="post" class="input-area">
+      <select name="selected_document" class="form-control" style="margin-right: 10px; margin-bottom: 10px;">
+        <option value="" disabled selected>Select document</option>
+        {% for file in uploaded_files %}
+        <option value="{{ file }}">{{ file }}</option>
+        {% endfor %}
+      </select>
+    </form>
     <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
@@ -230,14 +238,8 @@
       {% endfor %}
     </div>
     <form action="{{ url_for('chat') }}" method="post" class="input-area">
-      <input type="text" class="form-control" name="message" placeholder="Type your message" required>
-      <select name="selected_document" class="form-control" style="margin-right: 10px;">
-        <option value="" disabled selected>Select document</option>
-        {% for file in uploaded_files %}
-        <option value="{{ file }}">{{ file }}</option>
-        {% endfor %}
-      </select>
-      <button type="submit" class="btn btn-primary">Send</button>
+      <input type="text" class="form-control" name="message" placeholder="Type your message" required style="flex: 4;">
+      <button type="submit" class="btn btn-primary" style="flex: 1;">Send</button>
     </form>
     <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
     {% else %}
