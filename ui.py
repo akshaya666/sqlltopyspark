@@ -51,7 +51,9 @@ def chat():
             if document and document not in session['selected_documents']:
                 session['selected_documents'].append(document)
 
-    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), selected_documents=session.get('selected_documents', []))
+    dummy_documents = [f"Document {i}" for i in range(1, 11)]  # List of dummy documents
+
+    return render_template('index.html', section='chat', chat_history=session.get('chat_history', []), selected_documents=session.get('selected_documents', []), dummy_documents=dummy_documents)
 
 @app.route('/clear_chat')
 def clear_chat():
