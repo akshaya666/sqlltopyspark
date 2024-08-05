@@ -82,7 +82,7 @@
           margin-bottom: 10px;
           position: relative;
           font-size: 18px;
-          height: 40vh; /* Adjusted height for smaller chat window */
+          height: 30vh; /* Adjusted height for smaller chat window */
       }
       .chat-box::-webkit-scrollbar {
           width: 8px;
@@ -165,6 +165,8 @@
           text-align: center;
           transition: background-color 0.3s;
           position: relative;
+          min-height: 200px; /* Increased minimum height */
+          width: 80%; /* Increased width */
       }
       .upload-box:hover {
           background-color: #e9ecef;
@@ -194,6 +196,7 @@
       .dropdown-menu {
           max-height: 200px;
           overflow-y: auto;
+          width: 300px; /* Adjusted width */
       }
       .selected-documents {
           display: flex;
@@ -240,7 +243,6 @@
       <li>{{ file }}</li>
       {% endfor %}
     </ul>
-    {% endif %}
     {% elif section == 'chat' %}
     <h1>Chat Prompt</h1>
     <div class="document-select">
