@@ -89,6 +89,21 @@
           padding: 10px;
           border-radius: 15px;
           max-width: 60%;
+          position: relative;
+      }
+      .message .copy-icon {
+          display: block;
+          margin-top: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          color: rgba(0,71,123,1);
+          position: absolute;
+          left: -20px; /* Adjust as needed */
+          top: 50%;
+          transform: translateY(-50%);
+      }
+      .message .copy-icon:hover {
+          color: rgba(0,71,123,0.8);
       }
       .loading-indicator {
           display: flex;
@@ -193,17 +208,6 @@
       .btn-clear-chat {
           margin-left: 10px;
       }
-      .copy-icon {
-          display: block;
-          margin-top: 5px;
-          cursor: pointer;
-          font-size: 14px;
-          color: rgba(0,71,123,1);
-          text-align: right;
-      }
-      .copy-icon:hover {
-          color: rgba(0,71,123,0.8);
-      }
   </style>
 </head>
 <body>
@@ -213,7 +217,6 @@
     <a href="{{ url_for('upload_files') }}" class="{% if section == 'upload' %}active{% endif %}">Upload Files</a>
     <a href="{{ url_for('chat') }}" class="{% if section == 'chat' %}active{% endif %}">Document Search</a>
     <a>Document Summarization</a>
-
   </div>
   <div class="content">
     {% if section == 'upload' %}
@@ -251,17 +254,17 @@
     <div class="chat-box" id="chat-box">
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
-        <div class="message-bubble">{{ message.message }}</div>
         {% if message.role == 'bot' %}
         <div class="copy-icon" data-copy-text="{{ message.message }}">📋</div>
         {% endif %}
+        <div class="message-bubble">{{ message.message }}</div>
       </div>
       {% endfor %}
     </div>
     <form id="chat-form" class="input-area">
       <input type="text" class="form-control" name="message" placeholder="Type your question here" required>
-      <button type="submit" class="btn btn-upload">Send</button>
-      <a href="{{ url_for('clear_chat') }}" class="btn btn-clear-chat">Clear Chat</a>
+      <button type="submit" class="btn btn-primary">Send</button>
+      <button type="button" class="btn btn-clear-chat" onclick="clearChat()">Clear Chat</button>
     </form>
     {% else %}
     <h1>Welcome</h1>
@@ -334,7 +337,7 @@
             $('#loading-indicator').remove();
 
             // Append bot response
-            const botMessageHtml = `<div class="message bot"><div class="message-bubble">${response.message}</div><div class="copy-icon" data-copy-text="${response.message}">📋</div></div>`;
+            const botMessageHtml = `<div class="message bot"><div class="copy-icon" data-copy-text="${response.message}">📋</div><div class="message-bubble">${response.message}</div></div>`;
             $('#chat-box').append(botMessageHtml);
             autoScrollToBottom();
           }
