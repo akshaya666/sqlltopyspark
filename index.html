@@ -5,186 +5,188 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
-      body {
-          display: flex;
-          flex-direction: column;
-          height: 100vh;
-          margin: 0;
-          font-family: 'Open Sans', sans-serif;
-          font-size: 14px;
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px;
+    }
+    .container {
+      flex: 1;
+      display: flex;
+      height: 100%;
+    }
+    .sidebar {
+      width: 200px; /* Adjusted width */
+      background-color: #ffffff; /* Changed to white */
+      color: #000000; /* Text color set to black */
+      min-height: 100vh;
+      position: fixed;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      padding: 20px; /* Added padding */
+    }
+    .sidebar a {
+      display: block;
+      color: #000000; /* Text color set to black */
+      padding: 15px;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background-color: rgba(0,71,123,0.1); /* Differentiation for selected menu */
+    }
+    .content {
+      margin-left: 200px; /* Adjusted margin to match sidebar width */
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .chat-box {
+      flex: 1;
+      overflow-y: auto;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-box::-webkit-scrollbar {
+      width: 8px;
+    }
+    .chat-box::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+    .chat-box::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    .message {
+      display: flex;
+      align-items: flex-start;
+    }
+    .message.user .message-bubble {
+      background-color: rgba(0,71,123,1);
+      color: #ffffff;
+      margin-left: auto;
+    }
+    .message.bot .message-bubble {
+      background-color: #e9ecef;
+      color: #000000;
+    }
+    .message .message-bubble {
+      padding: 10px;
+      border-radius: 15px;
+      max-width: 60%;
+    }
+    .loading-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: 10px;
+    }
+    .loading-indicator span {
+      display: block;
+      width: 8px;
+      height: 8px;
+      background-color: rgba(0,71,123,1);
+      border-radius: 50%;
+      animation: bounce 0.5s infinite alternate;
+    }
+    .loading-indicator span:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+    .loading-indicator span:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+    @keyframes bounce {
+      to {
+        opacity: 0.3;
+        transform: translateY(-5px);
       }
-      .container {
-          display: flex;
-          height: 100%;
-      }
-      .sidebar {
-          width: 200px; /* Adjusted width */
-          background-color: #ffffff;
-          color: #000000;
-          min-height: 100vh;
-          position: fixed;
-          left: 0;
-          top: 0;
-          transition: all 0.3s ease;
-          overflow: hidden;
-          border-right: 1px solid #ddd;
-      }
-      .sidebar h3 {
-          text-align: center;
-          padding: 15px 0;
-      }
-      .sidebar a {
-          display: block;
-          color: #000000;
-          padding: 15px;
-          text-decoration: none;
-      }
-      .sidebar a.active {
-          background-color: rgba(0,71,123,0.1);
-          color: rgba(0,71,123,1);
-      }
-      .sidebar a:hover {
-          background-color: rgba(0,71,123,0.1);
-      }
-      .content {
-          margin-left: 200px; /* Adjusted margin */
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          padding: 20px;
-      }
-      .chat-box {
-          flex: 1;
-          overflow-y: auto;
-          background-color: #f8f9fa;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          padding: 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-      }
-      .chat-box::-webkit-scrollbar {
-          width: 8px;
-      }
-      .chat-box::-webkit-scrollbar-thumb {
-          background: #888;
-          border-radius: 4px;
-      }
-      .chat-box::-webkit-scrollbar-thumb:hover {
-          background: #555;
-      }
-      .message {
-          display: flex;
-          align-items: flex-start;
-      }
-      .message.user .message-bubble {
-          background-color: rgba(0,71,123,1);
-          color: #ffffff;
-          margin-left: auto;
-      }
-      .message.bot .message-bubble {
-          background-color: #e9ecef;
-          color: #000000;
-      }
-      .message .message-bubble {
-          padding: 10px;
-          border-radius: 15px;
-          max-width: 60%;
-      }
-      .loading-indicator {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          margin-left: 10px;
-      }
-      .loading-indicator span {
-          display: block;
-          width: 8px;
-          height: 8px;
-          background-color: rgba(0,71,123,1);
-          border-radius: 50%;
-          animation: bounce 0.5s infinite alternate;
-      }
-      .loading-indicator span:nth-child(2) {
-          animation-delay: 0.1s;
-      }
-      .loading-indicator span:nth-child(3) {
-          animation-delay: 0.2s;
-      }
-      @keyframes bounce {
-          to {
-              opacity: 0.3;
-              transform: translateY(-5px);
-          }
-      }
-      .input-area {
-          display: flex;
-          gap: 10px;
-          margin-top: 20px;
-          align-items: center;
-      }
-      .input-area input {
-          flex: 1;
-          padding: 10px;
-          border-radius: 20px;
-          border: 1px solid #ddd;
-          font-size: 16px;
-      }
-      .input-area button {
-          padding: 10px 20px;
-          background-color: rgba(0,71,123,1);
-          color: #ffffff;
-          border: none;
-          border-radius: 20px;
-          font-size: 16px;
-      }
-      .input-area button:hover {
-          background-color: rgba(0,71,123,0.8);
-      }
-      .dropdown-container {
-          margin-bottom: 20px;
-      }
-      .dropdown-container select {
-          width: 100%;
-          padding: 10px;
-          border-radius: 5px;
-          border: 1px solid #ddd;
-          font-size: 16px;
-      }
-      .upload-container {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-      }
-      .upload-box {
-          border: 2px dashed #ddd;
-          border-radius: 8px;
-          padding: 20px;
-          text-align: center;
-      }
-      .upload-box label {
-          display: block;
-          margin-bottom: 10px;
-      }
-      .upload-box p {
-          margin: 10px 0;
-      }
-      .upload-box input {
-          display: none;
-      }
-      .file-name {
-          margin-top: 10px;
-      }
+    }
+    .input-area {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+    .input-area button {
+      padding: 10px 20px;
+      background-color: rgba(0,71,123,1); /* Updated blue shade */
+      color: #ffffff;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+    .input-area button:hover {
+      background-color: rgba(0,71,123,0.8); /* Slightly darker on hover */
+    }
+    .dropdown-container {
+      margin-bottom: 20px;
+    }
+    .dropdown-container select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+    .upload-container {
+      margin-top: 20px;
+    }
+    .upload-box {
+      border: 2px dashed rgba(0,71,123,1); /* Border color updated */
+      padding: 20px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .upload-box label {
+      color: rgba(0,71,123,1); /* Text color for label updated */
+      cursor: pointer;
+    }
+    .upload-box p {
+      margin: 10px 0;
+    }
+    .file-name {
+      margin-top: 10px;
+      color: #000000;
+    }
+    .clear-chat-btn {
+      margin-top: 10px; /* Added margin for padding */
+      padding: 10px 20px;
+      background-color: #e9ecef;
+      color: #000000;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .clear-chat-btn:hover {
+      background-color: #d6d6d6;
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="sidebar">
     <h3 class="text-center">Menu</h3>
-    <a href="{{ url_for('home') }}" class="{% if section == 'home' %}active{% endif %}">Home</a>
-    <a href="{{ url_for('upload_files') }}" class="{% if section == 'upload' %}active{% endif %}">Upload Files</a>
-    <a href="{{ url_for('chat') }}" class="{% if section == 'chat' %}active{% endif %}">Document Search</a>
+    <a href="{{ url_for('home') }}" class="{{ 'active' if section == 'home' }}">Home</a>
+    <a href="{{ url_for('upload_files') }}" class="{{ 'active' if section == 'upload' }}">Upload Files</a>
+    <a href="{{ url_for('chat') }}" class="{{ 'active' if section == 'chat' }}">Document Search</a>
   </div>
   <div class="content">
     {% if section == 'upload' %}
@@ -230,7 +232,7 @@
         <input type="text" class="form-control" name="message" placeholder="Type your message" required>
         <button type="submit" class="btn btn-primary">Send</button>
       </form>
-      <a href="{{ url_for('clear_chat') }}" class="btn btn-secondary">Clear Chat</a>
+      <a href="{{ url_for('clear_chat') }}" class="clear-chat-btn">Clear Chat</a>
     {% else %}
       <h1>Welcome</h1>
       <p>Select an option from the menu.</p>
