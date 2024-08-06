@@ -14,43 +14,35 @@
           font-size: 14px;
       }
       .container {
-          display: flex;
           flex: 1;
+          display: flex;
           height: 100%;
       }
       .sidebar {
           width: 250px;
           background-color: #ffffff;
-          color: #007bff;
+          color: #000000;
           min-height: 100vh;
           position: fixed;
-          left: 0;
-          top: 0;
           transition: all 0.3s ease;
           overflow: hidden;
-          box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+          border-right: 1px solid #ddd;
       }
       .sidebar a {
           display: block;
-          color: #007bff;
+          color: #000000;
           padding: 15px;
           text-decoration: none;
       }
-      .sidebar a:hover,
-      .sidebar a.active {
-          background-color: #f8f9fa;
-          color: #0056b3;
+      .sidebar a:hover {
+          background-color: #f0f0f0;
       }
-      .sidebar .menu-icon {
-          display: none;
-          font-size: 24px;
-          cursor: pointer;
-          padding: 10px;
-          text-align: center;
+      .sidebar a.active {
+          background-color: #e0e0e0;
       }
       .content {
-          flex: 1;
           margin-left: 250px;
+          flex: 1;
           display: flex;
           flex-direction: column;
           padding: 20px;
@@ -122,6 +114,7 @@
       }
       .input-area {
           display: flex;
+          align-items: center;
           gap: 10px;
           margin-top: 20px;
       }
@@ -153,49 +146,15 @@
           border: 1px solid #ddd;
           font-size: 16px;
       }
-      .upload-container {
-          margin-top: 20px;
-      }
-      .upload-box {
-          border: 2px dashed #ddd;
-          border-radius: 8px;
-          padding: 20px;
-          text-align: center;
-          position: relative;
-      }
-      .upload-box label {
-          display: block;
-          cursor: pointer;
-          color: #007bff;
-      }
-      .upload-box input[type="file"] {
-          display: none;
-      }
-      .upload-box p {
-          margin: 10px 0;
-      }
-      .file-name {
-          margin-top: 10px;
-          color: #007bff;
-      }
-      .btn-primary {
-          background-color: #007bff;
-          border-color: #007bff;
-      }
-      .btn-primary:hover {
-          background-color: #0056b3;
-          border-color: #004085;
-      }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="sidebar">
-    <div class="menu-icon" id="menu-icon">&#9776;</div>
     <h3 class="text-center">Menu</h3>
-    <a href="{{ url_for('home') }}" class="{{ 'active' if section == 'home' else '' }}">Home</a>
-    <a href="{{ url_for('upload_files') }}" class="{{ 'active' if section == 'upload' else '' }}">Upload Files</a>
-    <a href="{{ url_for('chat') }}" class="{{ 'active' if section == 'chat' else '' }}">Document Search</a>
+    <a href="{{ url_for('home') }}" class="{% if section == 'home' %}active{% endif %}">Home</a>
+    <a href="{{ url_for('upload_files') }}" class="{% if section == 'upload' %}active{% endif %}">Upload Files</a>
+    <a href="{{ url_for('chat') }}" class="{% if section == 'chat' %}active{% endif %}">Document Search</a>
   </div>
   <div class="content">
     {% if section == 'upload' %}
@@ -322,17 +281,6 @@
     });
 
     autoScrollToBottom();
-
-    // Menu icon toggle
-    const menuIcon = document.getElementById('menu-icon');
-    const sidebar = document.querySelector('.sidebar');
-
-    if (menuIcon) {
-      menuIcon.addEventListener('click', function() {
-        sidebar.classList.toggle('open');
-        document.querySelector('.content').style.marginLeft = sidebar.classList.contains('open') ? '0' : '250px';
-      });
-    }
   });
 </script>
 </body>
