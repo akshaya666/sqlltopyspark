@@ -27,6 +27,7 @@
       transition: all 0.3s ease;
       overflow: hidden;
       padding: 20px; /* Added padding */
+      border-right: 1px solid #ddd; /* Subtle differentiation */
     }
     .sidebar a {
       display: block;
@@ -45,11 +46,12 @@
       display: flex;
       flex-direction: column;
       padding: 20px;
+      background-color: #f8f9fa; /* Added background color for content */
     }
     .chat-box {
       flex: 1;
       overflow-y: auto;
-      background-color: #f8f9fa;
+      background-color: #ffffff; /* Changed to white for better contrast */
       border: 1px solid #ddd;
       border-radius: 8px;
       padding: 20px;
@@ -118,10 +120,11 @@
     }
     .input-area input {
       flex: 1;
-      padding: 10px;
+      padding: 15px; /* Increased padding for height adjustment */
       border-radius: 20px;
       border: 1px solid #ddd;
       font-size: 16px;
+      height: 45px; /* Adjusted height to match button */
     }
     .input-area button {
       padding: 10px 20px;
@@ -131,6 +134,7 @@
       border-radius: 20px;
       font-size: 16px;
       white-space: nowrap;
+      height: 45px; /* Height adjusted to match input */
     }
     .input-area button:hover {
       background-color: rgba(0,71,123,0.8); /* Slightly darker on hover */
@@ -157,6 +161,7 @@
     .upload-box label {
       color: rgba(0,71,123,1); /* Text color for label updated */
       cursor: pointer;
+      font-size: 16px; /* Increased font size for better visibility */
     }
     .upload-box p {
       margin: 10px 0;
@@ -168,15 +173,15 @@
     .clear-chat-btn {
       margin-top: 10px; /* Added margin for padding */
       padding: 10px 20px;
-      background-color: #e9ecef;
-      color: #000000;
-      border: 1px solid #ddd;
+      background-color: rgba(0,71,123,1); /* Updated blue shade */
+      color: #ffffff;
+      border: none;
       border-radius: 20px;
-      text-decoration: none;
+      text-align: center; /* Centered text */
       display: inline-block;
     }
     .clear-chat-btn:hover {
-      background-color: #d6d6d6;
+      background-color: rgba(0,71,123,0.8); /* Slightly darker on hover */
     }
   </style>
 </head>
