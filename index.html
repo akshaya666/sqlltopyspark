@@ -10,8 +10,8 @@
           flex-direction: column;
           height: 100vh;
           margin: 0;
-          font-size: 14px;
           font-family: 'Open Sans', sans-serif;
+          font-size: 14px;
       }
       .container {
           flex: 1;
@@ -20,22 +20,27 @@
       }
       .sidebar {
           width: 200px;
-          background-color: #fff;
-          color: #000;
+          background-color: #ffffff;
+          color: #000000;
           min-height: 100vh;
           position: fixed;
+          left: 0;
+          top: 0;
           transition: all 0.3s ease;
           overflow: hidden;
           border-right: 1px solid #ddd;
       }
       .sidebar a {
           display: block;
-          color: #000;
+          color: #000000;
           padding: 15px;
           text-decoration: none;
       }
-      .sidebar a:hover, .sidebar a.active {
-          background-color: #f0f0f0;
+      .sidebar a:hover {
+          background-color: rgba(0,71,123,0.1);
+      }
+      .sidebar a.active {
+          background-color: rgba(0,71,123,0.2);
       }
       .content {
           margin-left: 200px;
@@ -43,11 +48,12 @@
           display: flex;
           flex-direction: column;
           padding: 20px;
+          background-color: #f8f9fa;
       }
       .chat-box {
           flex: 1;
           overflow-y: auto;
-          background-color: #f8f9fa;
+          background-color: #ffffff;
           border: 1px solid #ddd;
           border-radius: 8px;
           padding: 20px;
@@ -106,7 +112,7 @@
       @keyframes bounce {
           to {
               opacity: 0.3;
-              transform: translateY(-5px;
+              transform: translateY(-5px);
           }
       }
       .input-area {
@@ -120,7 +126,7 @@
           border-radius: 20px;
           border: 1px solid #ddd;
           font-size: 16px;
-          height: 40px; /* Adjust the height to match the button */
+          height: 40px;
       }
       .input-area button {
           padding: 10px 20px;
@@ -129,10 +135,10 @@
           border: none;
           border-radius: 20px;
           font-size: 16px;
-          height: 40px; /* Adjust the height to match the input */
+          height: 40px;
       }
       .input-area button:hover {
-          background-color: #0056b3;
+          background-color: rgba(0,71,123,0.8);
       }
       .dropdown-container {
           margin-bottom: 20px;
@@ -145,158 +151,183 @@
           font-size: 16px;
       }
       .upload-container {
-          margin-top: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
       }
       .upload-box {
           border: 2px dashed rgba(0,71,123,1);
           padding: 20px;
+          border-radius: 8px;
           text-align: center;
-          cursor: pointer;
       }
       .upload-box label {
           display: block;
           color: rgba(0,71,123,1);
-          margin-bottom: 10px;
           cursor: pointer;
-      }
-      .upload-box input[type="file"] {
-          display: none;
+          font-size: 16px;
+          margin-bottom: 10px;
       }
       .upload-box p {
-          margin: 10px 0;
-          color: #888;
+          margin: 0;
       }
-      .upload-box .file-name {
-          color: #555;
+      .file-name {
+          margin-top: 10px;
+          font-size: 14px;
       }
-      .btn-secondary {
+      .btn-upload {
+          background-color: rgba(0,71,123,1);
+          color: #ffffff;
+      }
+      .btn-upload:hover {
+          background-color: rgba(0,71,123,0.8);
+      }
+      .btn-clear-chat {
           background-color: grey;
-          color: white;
-          height: 40px; /* Adjust the height to match the input and other button */
-          border: none;
-          border-radius: 20px;
-          font-size: 16px;
+          color: #ffffff;
       }
-      .btn-secondary:hover {
+      .btn-clear-chat:hover {
           background-color: darkgrey;
+      }
+      .btn-clear-chat {
+          margin-left: 10px;
       }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="sidebar">
-    <h3 class="text-center">Menu</h3>
-    <a href="{{ url_for('home') }}" class="{{ 'active' if section == 'home' else '' }}">Home</a>
-    <a href="{{ url_for('upload_files') }}" class="{{ 'active' if section == 'upload' else '' }}">Upload Files</a>
-    <a href="{{ url_for('chat') }}" class="{{ 'active' if section == 'chat' else '' }}">Document Search</a>
+    <a href="{{ url_for('home') }}" class="{% if section == 'home' %}active{% endif %}">Home</a>
+    <a href="{{ url_for('upload_files') }}" class="{% if section == 'upload' %}active{% endif %}">Upload Files</a>
+    <a href="{{ url_for('chat') }}" class="{% if section == 'chat' %}active{% endif %}">Document Search</a>
+    <a>Document Summarization</a>
+
   </div>
   <div class="content">
     {% if section == 'upload' %}
-      <h1>Upload Files</h1>
-      <div class="upload-container">
-        <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
-          <div class="upload-box">
-            <label for="file-input">Click here to select files</label>
-            <input type="file" id="file-input" name="files[]" multiple>
-            <p>or drag and drop files here</p>
-            <div id="file-name" class="file-name">No file chosen</div>
-          </div>
-          <button class="btn btn-primary" type="submit" style="background-color: rgba(0,71,123,1);">Upload</button>
-        </form>
-      </div>
-      {% if uploaded_files %}
-        <h3>Uploaded Files:</h3>
-        <ul>
-          {% for file in uploaded_files %}
-            <li>{{ file }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
+    <h4>Upload Files</h4>
+    <div class="upload-container">
+      <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
+        <div class="upload-box">
+          <label for="file-input">Click to select files</label>
+          <input type="file" id="file-input" name="files[]" multiple>
+          <p>or drag and drop files here</p>
+          <div id="file-name" class="file-name">No file chosen</div>
+        </div>
+        <button class="btn btn-upload" type="submit">Upload</button>
+      </form>
+    </div>
+    {% if uploaded_files %}
+    <h3>Uploaded Files:</h3>
+    <ul>
+      {% for file in uploaded_files %}
+      <li>{{ file }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
     {% elif section == 'chat' %}
-      <h1>Document Search</h1>
-      <div class="dropdown-container">
-        <label for="document-select">Select Document:</label>
-        <select id="document-select" name="selected_document">
-          <option value="">Select a document</option>
-          {% for document in documents %}
-            <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div id="chat-box" class="chat-box">
-        {% for message in chat_history %}
-          <div class="message {{ message.sender }}">
-            <div class="message-bubble">{{ message.text }}</div>
-          </div>
+    <h4>Document Search</h4>
+    <div class="dropdown-container">
+      <label for="document-select">Select Document:</label>
+      <select id="document-select" name="selected_document">
+        <option value="">Select a document</option>
+        {% for document in documents %}
+        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
         {% endfor %}
+      </select>
+    </div>
+    <div class="chat-box" id="chat-box">
+      {% for message in chat_history %}
+      <div class="message {{ message.role }}">
+        <div class="message-bubble">{{ message.message }}</div>
       </div>
-      <form id="chat-form" class="input-area">
-        <input type="text" name="message" placeholder="Type your message here..." required>
-        <button type="submit">Send</button>
-      </form>
-      <form action="{{ url_for('clear_chat') }}" method="post" class="input-area">
-        <button type="submit" class="btn btn-secondary">Clear Chat</button>
-      </form>
+      {% endfor %}
+    </div>
+    <form id="chat-form" class="input-area">
+      <input type="text" class="form-control" name="message" placeholder="Type your question here" required>
+      <button type="submit" class="btn btn-upload">Send</button>
+      <a href="{{ url_for('clear_chat') }}" class="btn btn-clear-chat">Clear Chat</a>
+    </form>
     {% else %}
-      <h1>Welcome to the Document Search Chat!</h1>
-      <p>Select a menu option to get started.</p>
+    <h1>Welcome</h1>
+    <p>Select an option from the menu.</p>
     {% endif %}
   </div>
 </div>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('file-input');
-    const fileNameDisplay = document.getElementById('file-name');
-
-    fileInput.addEventListener('change', function() {
-      const fileNames = Array.from(fileInput.files).map(file => file.name).join(', ');
-      fileNameDisplay.textContent = fileNames || 'No file chosen';
-    });
-
-    const autoScrollToBottom = () => {
-      const chatBox = document.getElementById('chat-box');
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    autoScrollToBottom();
-
-    const chatForm = document.getElementById('chat-form');
-    if (chatForm) {
-      chatForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const messageInput = chatForm.querySelector('input[name="message"]');
-        const message = messageInput.value.trim();
-        if (message !== '') {
-          const userMessageHTML = `<div class="message user"><div class="message-bubble">${message}</div></div>`;
-          const chatBox = document.getElementById('chat-box');
-          chatBox.insertAdjacentHTML('beforeend', userMessageHTML);
-          autoScrollToBottom();
-          messageInput.value = '';
-
-          const loadingIndicatorHTML = `<div class="message bot loading-indicator">
-                                          <span></span><span></span><span></span>
-                                        </div>`;
-          chatBox.insertAdjacentHTML('beforeend', loadingIndicatorHTML);
-          autoScrollToBottom();
-
-          const response = await fetch('/chat', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-              'message': message
-            })
-          });
-
-          const data = await response.json();
-          const botMessageHTML = `<div class="message bot"><div class="message-bubble">${data.response}</div></div>`;
-          chatBox.querySelector('.loading-indicator').remove();
-          chatBox.insertAdjacentHTML('beforeend', botMessageHTML);
-          autoScrollToBottom();
+    if (fileInput) {
+      fileInput.addEventListener('change', function() {
+        const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
+        const fileNameDisplay = document.getElementById('file-name');
+        if (fileNameDisplay) {
+          fileNameDisplay.textContent = fileName;
         }
       });
     }
+
+    const documentSelect = document.getElementById('document-select');
+    if (documentSelect) {
+      documentSelect.addEventListener('change', function() {
+        const selectedDocument = this.value;
+        fetch('/update_document', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({
+            'selected_document': selectedDocument
+          })
+        });
+      });
+    }
+
+    function autoScrollToBottom() {
+      const chatBox = document.getElementById('chat-box');
+      if (chatBox) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
+
+    $('#chat-form').on('submit', function(event) {
+      event.preventDefault();
+      const input = $(this).find('input[name="message"]');
+      const message = input.val().trim();
+      if (message) {
+        // Append user message immediately
+        const userMessageHtml = `<div class="message user"><div class="message-bubble">${message}</div></div>`;
+        $('#chat-box').append(userMessageHtml);
+        autoScrollToBottom();
+
+        // Clear input
+        input.val('');
+
+        // Append loading indicator for bot response
+        const loadingIndicatorHtml = `<div class="message bot" id="loading-indicator"><div class="message-bubble loading-indicator"><span></span><span></span><span></span></div></div>`;
+        $('#chat-box').append(loadingIndicatorHtml);
+        autoScrollToBottom();
+
+        // Send message to the server
+        $.ajax({
+          url: '/chat',
+          type: 'POST',
+          data: { message: message },
+          success: function(response) {
+            // Remove loading indicator
+            $('#loading-indicator').remove();
+
+            // Append bot response
+            const botMessageHtml = `<div class="message bot"><div class="message-bubble">${response.message}</div></div>`;
+            $('#chat-box').append(botMessageHtml);
+            autoScrollToBottom();
+          }
+        });
+      }
+    });
+
+    autoScrollToBottom();
   });
 </script>
 </body>
