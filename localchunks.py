@@ -69,3 +69,30 @@ class TextProcessor:
     def save_chunks_to_local(self, output_file):
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(self.chunks, f, indent=2)
+
+import json
+import boto3
+from text_processor import TextProcessor
+from chatgpt_handler import ChatGPTHandler
+
+# Local setup
+input_file_local = 'input_data.json'
+output_file_local = 'output_chunks.json'
+
+# Load JSON data from local file and process it
+text_processor = TextProcessor()
+text_processor.load_json_from_local(input_file_local)
+text_processor.process_text(max_chunks=10)  # Adjust max_chunks as needed
+text_processor.save_chunks_to_local(output_file_local)
+
+# Read chunks from the local file
+with open(output_file_local, 'r', encoding='utf-8') as f:
+    text_chunks = json.load(f)
+
+# Ask questions using ChatGPT
+api_key = 'your_openai_api_key_here'
+chatgpt_handler = ChatGPTHandler(api_key)
+
+question = "What does the document say about the sales figures?"
+precise_answer = chatgpt_handler.get_precise_answer(question, text_chunks)
+print(precise_answer)
