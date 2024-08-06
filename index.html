@@ -14,19 +14,24 @@
           font-size: 14px;
       }
       .container {
-          flex: 1;
           display: flex;
           height: 100%;
       }
       .sidebar {
-          width: 250px;
+          width: 200px; /* Adjusted width */
           background-color: #ffffff;
           color: #000000;
           min-height: 100vh;
           position: fixed;
+          left: 0;
+          top: 0;
           transition: all 0.3s ease;
           overflow: hidden;
           border-right: 1px solid #ddd;
+      }
+      .sidebar h3 {
+          text-align: center;
+          padding: 15px 0;
       }
       .sidebar a {
           display: block;
@@ -34,14 +39,15 @@
           padding: 15px;
           text-decoration: none;
       }
-      .sidebar a:hover {
-          background-color: #f0f0f0;
-      }
       .sidebar a.active {
-          background-color: #e0e0e0;
+          background-color: rgba(0,71,123,0.1);
+          color: rgba(0,71,123,1);
+      }
+      .sidebar a:hover {
+          background-color: rgba(0,71,123,0.1);
       }
       .content {
-          margin-left: 250px;
+          margin-left: 200px; /* Adjusted margin */
           flex: 1;
           display: flex;
           flex-direction: column;
@@ -73,7 +79,7 @@
           align-items: flex-start;
       }
       .message.user .message-bubble {
-          background-color: #007bff;
+          background-color: rgba(0,71,123,1);
           color: #ffffff;
           margin-left: auto;
       }
@@ -96,7 +102,7 @@
           display: block;
           width: 8px;
           height: 8px;
-          background-color: #007bff;
+          background-color: rgba(0,71,123,1);
           border-radius: 50%;
           animation: bounce 0.5s infinite alternate;
       }
@@ -114,9 +120,9 @@
       }
       .input-area {
           display: flex;
-          align-items: center;
           gap: 10px;
           margin-top: 20px;
+          align-items: center;
       }
       .input-area input {
           flex: 1;
@@ -127,14 +133,14 @@
       }
       .input-area button {
           padding: 10px 20px;
-          background-color: #007bff;
+          background-color: rgba(0,71,123,1);
           color: #ffffff;
           border: none;
           border-radius: 20px;
           font-size: 16px;
       }
       .input-area button:hover {
-          background-color: #0056b3;
+          background-color: rgba(0,71,123,0.8);
       }
       .dropdown-container {
           margin-bottom: 20px;
@@ -145,6 +151,30 @@
           border-radius: 5px;
           border: 1px solid #ddd;
           font-size: 16px;
+      }
+      .upload-container {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+      }
+      .upload-box {
+          border: 2px dashed #ddd;
+          border-radius: 8px;
+          padding: 20px;
+          text-align: center;
+      }
+      .upload-box label {
+          display: block;
+          margin-bottom: 10px;
+      }
+      .upload-box p {
+          margin: 10px 0;
+      }
+      .upload-box input {
+          display: none;
+      }
+      .file-name {
+          margin-top: 10px;
       }
   </style>
 </head>
