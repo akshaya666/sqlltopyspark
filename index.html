@@ -14,9 +14,9 @@
       font-size: 14px;
     }
     .container {
-      flex: 1;
       display: flex;
       height: 100%;
+      margin: 0; /* Ensure no margin around the container */
     }
     .sidebar {
       width: 200px; /* Adjusted width */
@@ -28,6 +28,7 @@
       overflow: hidden;
       padding: 20px; /* Added padding */
       border-right: 1px solid #ddd; /* Subtle differentiation */
+      left: 0; /* Ensure it is positioned at the leftmost */
     }
     .sidebar a {
       display: block;
@@ -173,15 +174,15 @@
     .clear-chat-btn {
       margin-top: 10px; /* Added margin for padding */
       padding: 10px 20px;
-      background-color: rgba(0,71,123,1); /* Updated blue shade */
-      color: #ffffff;
+      background-color: #cccccc; /* Grey color for button */
+      color: #000000;
       border: none;
       border-radius: 20px;
       text-align: center; /* Centered text */
       display: inline-block;
     }
     .clear-chat-btn:hover {
-      background-color: rgba(0,71,123,0.8); /* Slightly darker on hover */
+      background-color: #b3b3b3; /* Slightly darker grey on hover */
     }
   </style>
 </head>
