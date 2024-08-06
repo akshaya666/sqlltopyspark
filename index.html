@@ -5,202 +5,190 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
-    body {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        margin: 0;
-        font-family: 'Open Sans', sans-serif;
-        font-size: 14px;
-    }
-    .container {
-        flex: 1;
-        display: flex;
-        height: 100%;
-    }
-    .sidebar {
-        width: 200px;
-        background-color: #ffffff;
-        color: #000000;
-        min-height: 100vh;
-        position: fixed;
-        left: 0;
-        top: 0;
-        transition: all 0.3s ease;
-        overflow: hidden;
-        border-right: 1px solid #ddd;
-    }
-    .sidebar a {
-        display: block;
-        color: #000000;
-        padding: 15px;
-        text-decoration: none;
-    }
-    .sidebar a:hover {
-        background-color: rgba(0,71,123,0.1);
-    }
-    .sidebar a.active {
-        background-color: rgba(0,71,123,0.2);
-    }
-    .content {
-        margin-left: 200px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        background-color: #f8f9fa;
-    }
-    .chat-box {
-        flex: 1;
-        overflow-y: auto;
-        background-color: #ffffff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-    .chat-box::-webkit-scrollbar {
-        width: 8px;
-    }
-    .chat-box::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 4px;
-    }
-    .chat-box::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-    .message {
-        display: flex;
-        align-items: flex-start;
-    }
-    .message.user .message-bubble {
-        background-color: rgba(0,71,123,1);
-        color: #ffffff;
-        margin-left: auto;
-    }
-    .message.bot .message-bubble {
-        background-color: #e9ecef;
-        color: #000000;
-    }
-    .message .message-bubble {
-        padding: 10px;
-        border-radius: 15px;
-        max-width: 60%;
-    }
-    .loading-indicator {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin-left: 10px;
-    }
-    .loading-indicator span {
-        display: block;
-        width: 8px;
-        height: 8px;
-        background-color: rgba(0,71,123,1);
-        border-radius: 50%;
-        animation: bounce 0.5s infinite alternate;
-    }
-    .loading-indicator span:nth-child(2) {
-        animation-delay: 0.1s;
-    }
-    .loading-indicator span:nth-child(3) {
-        animation-delay: 0.2s;
-    }
-    @keyframes bounce {
-        to {
-            opacity: 0.3;
-            transform: translateY(-5px);
-        }
-    }
-    .input-area {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-    }
-    .input-area input {
-        flex: 1;
-        padding: 10px;
-        border-radius: 20px;
-        border: 1px solid #ddd;
-        font-size: 16px;
-        height: 40px;
-    }
-    .input-area button {
-        padding: 10px 20px;
-        background-color: rgba(0,71,123,1);
-        color: #ffffff;
-        border: none;
-        border-radius: 20px;
-        font-size: 16px;
-        height: 40px;
-    }
-    .input-area button:hover {
-        background-color: rgba(0,71,123,0.8);
-    }
-    .dropdown-container {
-        margin-bottom: 20px;
-    }
-    .dropdown-container select {
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        font-size: 16px;
-    }
-    .upload-container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-    .upload-box {
-        border: 2px dashed rgba(0,71,123,1);
-        padding: 20px;
-        border-radius: 8px;
-        text-align: center;
-    }
-    .upload-box label {
-        display: block;
-        color: rgba(0,71,123,1);
-        cursor: pointer;
-        font-size: 16px;
-        margin-bottom: 10px;
-    }
-    .upload-box p {
-        margin: 0;
-    }
-    .file-name {
-        margin-top: 10px;
-        font-size: 14px;
-    }
-    .btn-upload {
-        background-color: rgba(0,71,123,1);
-        color: #ffffff;
-    }
-    .btn-upload:hover {
-        background-color: rgba(0,71,123,0.8);
-    }
-    .btn-clear-chat {
-        background-color: grey;
-        color: #ffffff;
-    }
-    .btn-clear-chat:hover {
-        background-color: darkgrey;
-    }
-    .btn-clear-chat {
-        margin-left: 10px;
-    }
+      body {
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          margin: 0;
+          font-size: 14px;
+          font-family: 'Open Sans', sans-serif;
+      }
+      .container {
+          flex: 1;
+          display: flex;
+          height: 100%;
+      }
+      .sidebar {
+          width: 200px;
+          background-color: #fff;
+          color: #000;
+          min-height: 100vh;
+          position: fixed;
+          transition: all 0.3s ease;
+          overflow: hidden;
+          border-right: 1px solid #ddd;
+      }
+      .sidebar a {
+          display: block;
+          color: #000;
+          padding: 15px;
+          text-decoration: none;
+      }
+      .sidebar a:hover, .sidebar a.active {
+          background-color: #f0f0f0;
+      }
+      .content {
+          margin-left: 200px;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding: 20px;
+      }
+      .chat-box {
+          flex: 1;
+          overflow-y: auto;
+          background-color: #f8f9fa;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+      }
+      .chat-box::-webkit-scrollbar {
+          width: 8px;
+      }
+      .chat-box::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 4px;
+      }
+      .chat-box::-webkit-scrollbar-thumb:hover {
+          background: #555;
+      }
+      .message {
+          display: flex;
+          align-items: flex-start;
+      }
+      .message.user .message-bubble {
+          background-color: rgba(0,71,123,1);
+          color: #ffffff;
+          margin-left: auto;
+      }
+      .message.bot .message-bubble {
+          background-color: #e9ecef;
+          color: #000000;
+      }
+      .message .message-bubble {
+          padding: 10px;
+          border-radius: 15px;
+          max-width: 60%;
+      }
+      .loading-indicator {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          margin-left: 10px;
+      }
+      .loading-indicator span {
+          display: block;
+          width: 8px;
+          height: 8px;
+          background-color: rgba(0,71,123,1);
+          border-radius: 50%;
+          animation: bounce 0.5s infinite alternate;
+      }
+      .loading-indicator span:nth-child(2) {
+          animation-delay: 0.1s;
+      }
+      .loading-indicator span:nth-child(3) {
+          animation-delay: 0.2s;
+      }
+      @keyframes bounce {
+          to {
+              opacity: 0.3;
+              transform: translateY(-5px;
+          }
+      }
+      .input-area {
+          display: flex;
+          gap: 10px;
+          margin-top: 20px;
+      }
+      .input-area input {
+          flex: 1;
+          padding: 10px;
+          border-radius: 20px;
+          border: 1px solid #ddd;
+          font-size: 16px;
+          height: 40px; /* Adjust the height to match the button */
+      }
+      .input-area button {
+          padding: 10px 20px;
+          background-color: rgba(0,71,123,1);
+          color: #ffffff;
+          border: none;
+          border-radius: 20px;
+          font-size: 16px;
+          height: 40px; /* Adjust the height to match the input */
+      }
+      .input-area button:hover {
+          background-color: #0056b3;
+      }
+      .dropdown-container {
+          margin-bottom: 20px;
+      }
+      .dropdown-container select {
+          width: 100%;
+          padding: 10px;
+          border-radius: 5px;
+          border: 1px solid #ddd;
+          font-size: 16px;
+      }
+      .upload-container {
+          margin-top: 20px;
+      }
+      .upload-box {
+          border: 2px dashed rgba(0,71,123,1);
+          padding: 20px;
+          text-align: center;
+          cursor: pointer;
+      }
+      .upload-box label {
+          display: block;
+          color: rgba(0,71,123,1);
+          margin-bottom: 10px;
+          cursor: pointer;
+      }
+      .upload-box input[type="file"] {
+          display: none;
+      }
+      .upload-box p {
+          margin: 10px 0;
+          color: #888;
+      }
+      .upload-box .file-name {
+          color: #555;
+      }
+      .btn-secondary {
+          background-color: grey;
+          color: white;
+          height: 40px; /* Adjust the height to match the input and other button */
+          border: none;
+          border-radius: 20px;
+          font-size: 16px;
+      }
+      .btn-secondary:hover {
+          background-color: darkgrey;
+      }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="sidebar">
     <h3 class="text-center">Menu</h3>
-    <a href="{{ url_for('home') }}" class="{% if section == 'home' %}active{% endif %}">Home</a>
-    <a href="{{ url_for('upload_files') }}" class="{% if section == 'upload' %}active{% endif %}">Upload Files</a>
-    <a href="{{ url_for('chat') }}" class="{% if section == 'chat' %}active{% endif %}">Document Search</a>
+    <a href="{{ url_for('home') }}" class="{{ 'active' if section == 'home' else '' }}">Home</a>
+    <a href="{{ url_for('upload_files') }}" class="{{ 'active' if section == 'upload' else '' }}">Upload Files</a>
+    <a href="{{ url_for('chat') }}" class="{{ 'active' if section == 'chat' else '' }}">Document Search</a>
   </div>
   <div class="content">
     {% if section == 'upload' %}
@@ -208,12 +196,12 @@
       <div class="upload-container">
         <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
           <div class="upload-box">
-            <label for="file-input">Click to select files</label>
+            <label for="file-input">Click here to select files</label>
             <input type="file" id="file-input" name="files[]" multiple>
             <p>or drag and drop files here</p>
             <div id="file-name" class="file-name">No file chosen</div>
           </div>
-          <button class="btn btn-upload" type="submit">Upload</button>
+          <button class="btn btn-primary" type="submit" style="background-color: rgba(0,71,123,1);">Upload</button>
         </form>
       </div>
       {% if uploaded_files %}
@@ -235,102 +223,81 @@
           {% endfor %}
         </select>
       </div>
-      <div class="chat-box" id="chat-box">
+      <div id="chat-box" class="chat-box">
         {% for message in chat_history %}
-          <div class="message {{ message.role }}">
-            <div class="message-bubble">{{ message.message }}</div>
+          <div class="message {{ message.sender }}">
+            <div class="message-bubble">{{ message.text }}</div>
           </div>
         {% endfor %}
       </div>
       <form id="chat-form" class="input-area">
-        <input type="text" class="form-control" name="message" placeholder="Type your message" required>
-        <button type="submit" class="btn btn-upload">Send</button>
-        <a href="{{ url_for('clear_chat') }}" class="btn btn-clear-chat">Clear Chat</a>
+        <input type="text" name="message" placeholder="Type your message here..." required>
+        <button type="submit">Send</button>
+      </form>
+      <form action="{{ url_for('clear_chat') }}" method="post" class="input-area">
+        <button type="submit" class="btn btn-secondary">Clear Chat</button>
       </form>
     {% else %}
-      <h1>Welcome</h1>
-      <p>Select an option from the menu.</p>
+      <h1>Welcome to the Document Search Chat!</h1>
+      <p>Select a menu option to get started.</p>
     {% endif %}
   </div>
 </div>
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('file-input');
-    if (fileInput) {
-      fileInput.addEventListener('change', function() {
-        const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
-        const fileNameDisplay = document.getElementById('file-name');
-        if (fileNameDisplay) {
-          fileNameDisplay.textContent = fileName;
+    const fileNameDisplay = document.getElementById('file-name');
+
+    fileInput.addEventListener('change', function() {
+      const fileNames = Array.from(fileInput.files).map(file => file.name).join(', ');
+      fileNameDisplay.textContent = fileNames || 'No file chosen';
+    });
+
+    const autoScrollToBottom = () => {
+      const chatBox = document.getElementById('chat-box');
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    autoScrollToBottom();
+
+    const chatForm = document.getElementById('chat-form');
+    if (chatForm) {
+      chatForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const messageInput = chatForm.querySelector('input[name="message"]');
+        const message = messageInput.value.trim();
+        if (message !== '') {
+          const userMessageHTML = `<div class="message user"><div class="message-bubble">${message}</div></div>`;
+          const chatBox = document.getElementById('chat-box');
+          chatBox.insertAdjacentHTML('beforeend', userMessageHTML);
+          autoScrollToBottom();
+          messageInput.value = '';
+
+          const loadingIndicatorHTML = `<div class="message bot loading-indicator">
+                                          <span></span><span></span><span></span>
+                                        </div>`;
+          chatBox.insertAdjacentHTML('beforeend', loadingIndicatorHTML);
+          autoScrollToBottom();
+
+          const response = await fetch('/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+              'message': message
+            })
+          });
+
+          const data = await response.json();
+          const botMessageHTML = `<div class="message bot"><div class="message-bubble">${data.response}</div></div>`;
+          chatBox.querySelector('.loading-indicator').remove();
+          chatBox.insertAdjacentHTML('beforeend', botMessageHTML);
+          autoScrollToBottom();
         }
       });
     }
-
-    const documentSelect = document.getElementById('document-select');
-    if (documentSelect) {
-      documentSelect.addEventListener('change', function() {
-        const selectedDocument = this.value;
-        fetch('/update_document', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: new URLSearchParams({
-            'selected_document': selectedDocument
-          })
-        });
-      });
-    }
-
-    function autoScrollToBottom() {
-      const chatBox = document.getElementById('chat-box');
-      if (chatBox) {
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
-    }
-
-    $('#chat-form').on('submit', function(event) {
-      event.preventDefault();
-      const input = $(this).find('input[name="message"]');
-      const message = input.val().trim();
-      if (message) {
-        // Append user message immediately
-        const userMessageHtml = `<div class="message user"><div class="message-bubble">${message}</div></div>`;
-        $('#chat-box').append(userMessageHtml);
-        autoScrollToBottom();
-
-        // Clear input
-        input.val('');
-
-        // Append loading indicator for bot response
-        const loadingIndicatorHtml = `<div class="message bot" id="loading-indicator"><div class="message-bubble loading-indicator"><span></span><span></span><span></span></div></div>`;
-        $('#chat-box').append(loadingIndicatorHtml);
-        autoScrollToBottom();
-
-        // Send message to the server
-        $.ajax({
-          url: '/chat',
-          type: 'POST',
-          data: { message: message },
-          success: function(response) {
-            // Remove loading indicator
-            $('#loading-indicator').remove();
-
-            // Append bot response
-            const botMessageHtml = `<div class="message bot"><div class="message-bubble">${response.message}</div></div>`;
-            $('#chat-box').append(botMessageHtml);
-            autoScrollToBottom();
-          }
-        });
-      }
-    });
-
-    autoScrollToBottom();
   });
 </script>
 </body>
 </html>
-<form action="{{ url_for('clear_chat') }}" method="post" class="input-area">
-  <button type="submit" class="btn btn-secondary" style="background-color: grey;">Clear Chat</button>
-</form>
