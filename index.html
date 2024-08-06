@@ -73,7 +73,7 @@
       }
       .message {
           display: flex;
-          align-items: flex-start;
+          flex-direction: column;
           position: relative;
       }
       .message.user .message-bubble {
@@ -194,12 +194,12 @@
           margin-left: 10px;
       }
       .copy-icon {
-          position: absolute;
-          right: 10px;
-          bottom: 10px;
+          display: block;
+          margin-top: 5px;
           cursor: pointer;
           font-size: 14px;
           color: rgba(0,71,123,1);
+          text-align: right;
       }
       .copy-icon:hover {
           color: rgba(0,71,123,0.8);
