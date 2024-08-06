@@ -74,6 +74,7 @@
       .message {
           display: flex;
           align-items: flex-start;
+          position: relative;
       }
       .message.user .message-bubble {
           background-color: rgba(0,71,123,1);
@@ -192,6 +193,17 @@
       .btn-clear-chat {
           margin-left: 10px;
       }
+      .copy-icon {
+          position: absolute;
+          right: 10px;
+          bottom: 10px;
+          cursor: pointer;
+          font-size: 14px;
+          color: rgba(0,71,123,1);
+      }
+      .copy-icon:hover {
+          color: rgba(0,71,123,0.8);
+      }
   </style>
 </head>
 <body>
@@ -240,6 +252,9 @@
       {% for message in chat_history %}
       <div class="message {{ message.role }}">
         <div class="message-bubble">{{ message.message }}</div>
+        {% if message.role == 'bot' %}
+        <div class="copy-icon" data-copy-text="{{ message.message }}">📋</div>
+        {% endif %}
       </div>
       {% endfor %}
     </div>
@@ -319,12 +334,19 @@
             $('#loading-indicator').remove();
 
             // Append bot response
-            const botMessageHtml = `<div class="message bot"><div class="message-bubble">${response.message}</div></div>`;
+            const botMessageHtml = `<div class="message bot"><div class="message-bubble">${response.message}</div><div class="copy-icon" data-copy-text="${response.message}">📋</div></div>`;
             $('#chat-box').append(botMessageHtml);
             autoScrollToBottom();
           }
         });
       }
+    });
+
+    $('#chat-box').on('click', '.copy-icon', function() {
+      const textToCopy = $(this).data('copy-text');
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        alert('Copied to clipboard!');
+      });
     });
 
     autoScrollToBottom();
