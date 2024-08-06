@@ -5,209 +5,206 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
-      body {
-          display: flex;
-          flex-direction: column;
-          height: 100vh;
-          margin: 0;
-          font-family: 'Open Sans', sans-serif;
-          font-size: 14px;
-      }
-      .container {
-          flex: 1;
-          display: flex;
-          height: 100%;
-      }
-      .sidebar {
-          width: 200px;
-          background-color: #ffffff;
-          color: #000000;
-          min-height: 100vh;
-          position: fixed;
-          left: 0;
-          top: 0;
-          transition: all 0.3s ease;
-          overflow: hidden;
-          border-right: 1px solid #ddd;
-      }
-      .sidebar a {
-          display: block;
-          color: #000000;
-          padding: 15px;
-          text-decoration: none;
-      }
-      .sidebar a:hover {
-          background-color: rgba(0,71,123,0.1);
-      }
-      .sidebar a.active {
-          background-color: rgba(0,71,123,0.2);
-      }
-      .content {
-          margin-left: 200px;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          padding: 20px;
-          background-color: #f8f9fa;
-      }
-      .chat-box {
-          flex: 1;
-          overflow-y: auto;
-          background-color: #ffffff;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          padding: 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-      }
-      .chat-box::-webkit-scrollbar {
-          width: 8px;
-      }
-      .chat-box::-webkit-scrollbar-thumb {
-          background: #888;
-          border-radius: 4px;
-      }
-      .chat-box::-webkit-scrollbar-thumb:hover {
-          background: #555;
-      }
-      .message {
-          display: flex;
-          flex-direction: column;
-          position: relative;
-      }
-      .message.user .message-bubble {
-          background-color: rgba(0,71,123,1);
-          color: #ffffff;
-          margin-left: auto;
-      }
-      .message.bot .message-bubble {
-          background-color: #e9ecef;
-          color: #000000;
-      }
-      .message .message-bubble {
-          padding: 10px;
-          border-radius: 15px;
-          max-width: 60%;
-          position: relative;
-      }
-      .message .copy-icon {
-          display: block;
-          margin-top: 5px;
-          cursor: pointer;
-          font-size: 14px;
-          color: rgba(0,71,123,1);
-          position: absolute;
-          left: -20px; /* Adjust as needed */
-          top: 50%;
-          transform: translateY(-50%);
-      }
-      .message .copy-icon:hover {
-          color: rgba(0,71,123,0.8);
-      }
-      .loading-indicator {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          margin-left: 10px;
-      }
-      .loading-indicator span {
-          display: block;
-          width: 8px;
-          height: 8px;
-          background-color: rgba(0,71,123,1);
-          border-radius: 50%;
-          animation: bounce 0.5s infinite alternate;
-      }
-      .loading-indicator span:nth-child(2) {
-          animation-delay: 0.1s;
-      }
-      .loading-indicator span:nth-child(3) {
-          animation-delay: 0.2s;
-      }
-      @keyframes bounce {
-          to {
-              opacity: 0.3;
-              transform: translateY(-5px);
-          }
-      }
-      .input-area {
-          display: flex;
-          gap: 10px;
-          margin-top: 20px;
-      }
-      .input-area input {
-          flex: 1;
-          padding: 10px;
-          border-radius: 20px;
-          border: 1px solid #ddd;
-          font-size: 16px;
-          height: 40px;
-      }
-      .input-area button {
-          padding: 10px 20px;
-          background-color: rgba(0,71,123,1);
-          color: #ffffff;
-          border: none;
-          border-radius: 20px;
-          font-size: 16px;
-          height: 40px;
-      }
-      .input-area button:hover {
-          background-color: rgba(0,71,123,0.8);
-      }
-      .dropdown-container {
-          margin-bottom: 20px;
-      }
-      .dropdown-container select {
-          width: 100%;
-          padding: 10px;
-          border-radius: 5px;
-          border: 1px solid #ddd;
-          font-size: 16px;
-      }
-      .upload-container {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-      }
-      .upload-box {
-          border: 2px dashed rgba(0,71,123,1);
-          padding: 20px;
-          border-radius: 8px;
-          text-align: center;
-      }
-      .upload-box label {
-          display: block;
-          color: rgba(0,71,123,1);
-          cursor: pointer;
-          font-size: 16px;
-          margin-bottom: 10px;
-      }
-      .upload-box p {
-          margin: 0;
-      }
-      .file-name {
-          margin-top: 10px;
-          font-size: 14px;
-      }
-      .btn-upload {
-          background-color: rgba(0,71,123,1);
-          color: #ffffff;
-      }
-      .btn-upload:hover {
-          background-color: rgba(0,71,123,0.8);
-      }
-      .btn-clear-chat {
-          background-color: grey;
-          color: #ffffff;
-      }
-      .btn-clear-chat:hover {
-          background-color: darkgrey;
-      }
-      .btn-clear-chat {
-          margin-left: 10px;
-      }
+    body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+    }
+    .container {
+        flex: 1;
+        display: flex;
+        height: 100%;
+    }
+    .sidebar {
+        width: 200px;
+        background-color: #ffffff;
+        color: #000000;
+        min-height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        border-right: 1px solid #ddd;
+    }
+    .sidebar a {
+        display: block;
+        color: #000000;
+        padding: 15px;
+        text-decoration: none;
+    }
+    .sidebar a:hover {
+        background-color: rgba(0,71,123,0.1);
+    }
+    .sidebar a.active {
+        background-color: rgba(0,71,123,0.2);
+    }
+    .content {
+        margin-left: 200px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+    .chat-box {
+        flex: 1;
+        overflow-y: auto;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .chat-box::-webkit-scrollbar {
+        width: 8px;
+    }
+    .chat-box::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
+    .chat-box::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    .message {
+        position: relative; /* Ensures copy icon is positioned relative to this container */
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 10px; /* Add spacing between messages */
+    }
+    .message-bubble {
+        padding: 10px;
+        border-radius: 15px;
+        max-width: 60%;
+        word-wrap: break-word;
+    }
+    .message.user .message-bubble {
+        background-color: rgba(0,71,123,1);
+        color: #ffffff;
+        margin-left: auto;
+        padding-left: 30px; /* Space for copy icon */
+    }
+    .message.bot .message-bubble {
+        background-color: #e9ecef;
+        color: #000000;
+        padding-right: 30px; /* Space for copy icon */
+    }
+    .copy-icon {
+        position: absolute;
+        top: 50%;
+        left: -30px; /* Adjust based on design */
+        width: 16px;
+        height: 16px;
+        background: url('copy-icon.svg') no-repeat center center;
+        background-size: contain;
+        cursor: pointer;
+        transform: translateY(-50%);
+    }
+    .loading-indicator {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-left: 10px;
+    }
+    .loading-indicator span {
+        display: block;
+        width: 8px;
+        height: 8px;
+        background-color: rgba(0,71,123,1);
+        border-radius: 50%;
+        animation: bounce 0.5s infinite alternate;
+    }
+    .loading-indicator span:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+    .loading-indicator span:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+    @keyframes bounce {
+        to {
+            opacity: 0.3;
+            transform: translateY(-5px);
+        }
+    }
+    .input-area {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .input-area input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 20px;
+        border: 1px solid #ddd;
+        font-size: 16px;
+        height: 40px;
+    }
+    .input-area button {
+        padding: 10px 20px;
+        background-color: rgba(0,71,123,1);
+        color: #ffffff;
+        border: none;
+        border-radius: 20px;
+        font-size: 16px;
+        height: 40px;
+    }
+    .input-area button:hover {
+        background-color: rgba(0,71,123,0.8);
+    }
+    .dropdown-container {
+        margin-bottom: 20px;
+    }
+    .dropdown-container select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 16px;
+    }
+    .upload-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .upload-box {
+        border: 2px dashed rgba(0,71,123,1);
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+    .upload-box label {
+        display: block;
+        color: rgba(0,71,123,1);
+        cursor: pointer;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    .upload-box p {
+        margin: 0;
+    }
+    .file-name {
+        margin-top: 10px;
+        font-size: 14px;
+    }
+    .btn-upload {
+        background-color: rgba(0,71,123,1);
+        color: #ffffff;
+    }
+    .btn-upload:hover {
+        background-color: rgba(0,71,123,0.8);
+    }
+    .btn-clear-chat {
+        background-color: grey;
+        color: #ffffff;
+    }
+    .btn-clear-chat:hover {
+        background-color: darkgrey;
+    }
   </style>
 </head>
 <body>
@@ -247,112 +244,60 @@
       <select id="document-select" name="selected_document">
         <option value="">Select a document</option>
         {% for document in documents %}
-        <option value="{{ document }}" {% if document == selected_document %}selected{% endif %}>{{ document }}</option>
+        <option value="{{ document }}">{{ document }}</option>
         {% endfor %}
       </select>
     </div>
     <div class="chat-box" id="chat-box">
-      {% for message in chat_history %}
-      <div class="message {{ message.role }}">
-        {% if message.role == 'bot' %}
-        <div class="copy-icon" data-copy-text="{{ message.message }}">📋</div>
-        {% endif %}
-        <div class="message-bubble">{{ message.message }}</div>
+      <div class="message user">
+        <div class="message-bubble">
+          User message here
+          <div class="copy-icon"></div>
+        </div>
       </div>
-      {% endfor %}
+      <div class="message bot">
+        <div class="message-bubble">
+          Bot response here
+          <div class="copy-icon"></div>
+        </div>
+      </div>
     </div>
-    <form id="chat-form" class="input-area">
-      <input type="text" class="form-control" name="message" placeholder="Type your question here" required>
-      <button type="submit" class="btn btn-primary">Send</button>
-      <button type="button" class="btn btn-clear-chat" onclick="clearChat()">Clear Chat</button>
-    </form>
-    {% else %}
-    <h1>Welcome</h1>
-    <p>Select an option from the menu.</p>
+    <div class="input-area">
+      <input type="text" id="chat-input" placeholder="Type your message here">
+      <button id="send-button">Send</button>
+    </div>
+    <div class="loading-indicator" id="loading-indicator" style="display: none;">
+      <span></span><span></span><span></span>
+    </div>
+    <button class="btn btn-clear-chat" id="clear-chat">Clear Chat</button>
     {% endif %}
   </div>
 </div>
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.copy-icon').forEach(function(icon) {
+      icon.addEventListener('click', function() {
+        const messageBubble = this.closest('.message-bubble');
+        const message = messageBubble.textContent.trim();
+        navigator.clipboard.writeText(message).then(function() {
+          // Optional: Provide feedback to the user
+          console.log('Copied to clipboard');
+        }).catch(function(err) {
+          console.error('Failed to copy: ', err);
+        });
+      });
+    });
+
+    document.getElementById('clear-chat').addEventListener('click', function() {
+      document.getElementById('chat-box').innerHTML = '';
+    });
+
     const fileInput = document.getElementById('file-input');
-    if (fileInput) {
-      fileInput.addEventListener('change', function() {
-        const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
-        const fileNameDisplay = document.getElementById('file-name');
-        if (fileNameDisplay) {
-          fileNameDisplay.textContent = fileName;
-        }
-      });
-    }
-
-    const documentSelect = document.getElementById('document-select');
-    if (documentSelect) {
-      documentSelect.addEventListener('change', function() {
-        const selectedDocument = this.value;
-        fetch('/update_document', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: new URLSearchParams({
-            'selected_document': selectedDocument
-          })
-        });
-      });
-    }
-
-    function autoScrollToBottom() {
-      const chatBox = document.getElementById('chat-box');
-      if (chatBox) {
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
-    }
-
-    $('#chat-form').on('submit', function(event) {
-      event.preventDefault();
-      const input = $(this).find('input[name="message"]');
-      const message = input.val().trim();
-      if (message) {
-        // Append user message immediately
-        const userMessageHtml = `<div class="message user"><div class="message-bubble">${message}</div></div>`;
-        $('#chat-box').append(userMessageHtml);
-        autoScrollToBottom();
-
-        // Clear input
-        input.val('');
-
-        // Append loading indicator for bot response
-        const loadingIndicatorHtml = `<div class="message bot" id="loading-indicator"><div class="message-bubble loading-indicator"><span></span><span></span><span></span></div></div>`;
-        $('#chat-box').append(loadingIndicatorHtml);
-        autoScrollToBottom();
-
-        // Send message to the server
-        $.ajax({
-          url: '/chat',
-          type: 'POST',
-          data: { message: message },
-          success: function(response) {
-            // Remove loading indicator
-            $('#loading-indicator').remove();
-
-            // Append bot response
-            const botMessageHtml = `<div class="message bot"><div class="copy-icon" data-copy-text="${response.message}">📋</div><div class="message-bubble">${response.message}</div></div>`;
-            $('#chat-box').append(botMessageHtml);
-            autoScrollToBottom();
-          }
-        });
-      }
+    const fileNameDisplay = document.getElementById('file-name');
+    fileInput.addEventListener('change', function() {
+      const files = Array.from(fileInput.files).map(file => file.name).join(', ');
+      fileNameDisplay.textContent = files || 'No file chosen';
     });
-
-    $('#chat-box').on('click', '.copy-icon', function() {
-      const textToCopy = $(this).data('copy-text');
-      navigator.clipboard.writeText(textToCopy).then(() => {
-        alert('Copied to clipboard!');
-      });
-    });
-
-    autoScrollToBottom();
   });
 </script>
 </body>
