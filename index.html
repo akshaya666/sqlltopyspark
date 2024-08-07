@@ -375,3 +375,23 @@
     right: 20px; /* Align it to the right with some spacing */
     bottom: 20px; /* Add spacing from the bottom */
 }
+
+
+ function showInfoMessage(message) {
+    const infoMessage = document.getElementById('info-message');
+    infoMessage.innerText = message;
+    infoMessage.style.display = 'block';
+    setTimeout(() => {
+      infoMessage.style.display = 'none';
+    }, 3000);
+  }
+
+.info-message {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    padding: 10px;
+    border: 1px solid #bee5eb;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: none;
+}
